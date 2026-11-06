@@ -1,37 +1,141 @@
-# Live Location Tracking
 
-Live Location Tracking is a project for sharing and monitoring a user's real-time location.
+# Live Location Tracking System
 
-## Overview
+A real-time 3D location tracking system designed to visualize the positions of personnel operating inside complex, multi-storey buildings, including floors and underground basements.
 
-The project is intended to provide a reliable way to:
+## 📌 Problem Statement
 
-- Capture location updates from a user's device.
-- Share live location data with authorized viewers.
-- Display location changes in near real time.
-- Handle location permissions and connection changes safely.
+**Organization:** National Security Guard (NSG), Ministry of Home Affairs  
+**Year:** 2024  
+**Domain:** Miscellaneous  
+**Category:** Software  
 
-## Project Status
+The National Security Guard (NSG) operates in Close Quarters Battle (CQB) environments, where teams operate inside complex structures such as hotels, hospitals, metro stations, and buildings of national importance.
 
-This project is currently being set up. Implementation details, supported platforms, and the technology stack will be documented here as they are added.
+In these environments, knowing the precise location of personnel, including their floor or basement level, is essential for effective command and control.
 
-## Getting Started
+Traditional GPS/GSM-based tracking systems primarily provide two-dimensional location information and often fail to determine the exact floor level inside buildings.
 
-Clone the repository:
+This project aims to address this limitation by developing a system capable of tracking personnel in real time and visualizing their positions on existing 3D building models.
 
-```bash
-git clone https://github.com/Dev-Vijay-Mate/Live-Location-Tracking.git
-cd Live-Location-Tracking
+## 🎯 Project Objectives
+
+- Enable real-time location tracking of personnel and House Intervention Teams (HITs).
+- Identify the floor or basement level at which personnel are operating.
+- Provide a 3D visualization of personnel positions inside buildings.
+- Integrate tracking information with existing 3D building models.
+- Provide a centralized dashboard for monitoring and situational awareness.
+- Improve location visibility and command-and-control capabilities.
+
+## ⚙️ Proposed System
+
+The proposed system focuses on combining indoor positioning technologies, location data processing, and 3D visualization.
+
+### 1. Indoor Location Tracking
+Explore suitable indoor positioning approaches to estimate personnel locations where conventional GPS signals are unreliable.
+
+### 2. Floor-Level Detection
+Determine the vertical position of personnel to distinguish between different floors and basement levels.
+
+### 3. Real-Time Data Processing
+Process incoming location updates and make the latest position information available to the visualization system.
+
+### 4. 3D Building Visualization
+Display personnel positions within pre-existing 3D building models, providing a spatial representation of their locations.
+
+### 5. Monitoring Dashboard
+Develop a centralized interface for viewing personnel positions and tracking information.
+
+## 🏗️ High-Level Architecture
+
+```text
+       Indoor Tracking Devices
+                 |
+                 v
+       Location Data Collection
+                 |
+                 v
+        Position Estimation
+                 |
+          +------+------+
+          |             |
+          v             v
+    Floor Detection   Coordinate
+                      Processing
+          |             |
+          +------+------+
+                 |
+                 v
+         Real-Time Backend
+                 |
+                 v
+          Data Transmission
+                 |
+                 v
+       3D Building Visualization
+                 |
+                 v
+        Central Monitoring UI
 ```
 
-Once the application setup is available, the required installation and run commands will be added to this section.
+## 🛠️ Technology Stack
 
-## Contributing
+The final technology stack will be selected during the research and system-design phase.
 
-1. Create a feature branch.
-2. Make and test your changes.
-3. Open a pull request with a clear description of the change.
+Potential technology areas include:
 
-## License
+- **Frontend:** React.js / Three.js
+- **Backend:** Node.js / Python
+- **Database:** PostgreSQL
+- **Real-Time Communication:** WebSockets
+- **3D Visualization:** Three.js
+- **Indoor Positioning:** Research into suitable sensor-based positioning technologies
+- **Data Processing:** Python
 
-No license has been selected for this project yet.
+## 📋 Key Challenges
+
+- Accurate indoor positioning in GPS-denied environments.
+- Reliable floor and basement identification.
+- Minimizing location estimation errors.
+- Handling real-time location updates.
+- Integrating tracking coordinates with existing 3D building models.
+- Maintaining reliable system performance.
+
+## 🚧 Project Status
+
+**Status:** Planning and Research
+
+The project is currently in the problem analysis and system-design phase.
+
+Planned development milestones:
+
+- [ ] Requirement analysis
+- [ ] Research on indoor positioning technologies
+- [ ] System architecture design
+- [ ] Database and backend development
+- [ ] Real-time location processing
+- [ ] 3D building model integration
+- [ ] Monitoring dashboard development
+- [ ] Testing and performance evaluation
+- [ ] Final documentation
+
+## 🎯 Expected Outcome
+
+A functional prototype capable of displaying simulated or test-environment personnel locations in real time on a multi-storey 3D building model, including floor-level identification.
+
+The system will demonstrate how indoor positioning and 3D visualization can improve spatial awareness in complex indoor environments.
+
+## ⚠️ Disclaimer
+
+This project is an academic software-development initiative based on the NSG problem statement. It is intended for research, educational purposes, and controlled testing environments.
+
+It does not represent an officially deployed NSG system.
+
+## 👨‍💻 Contributors
+
+**Project Team:** To be updated.
+
+---
+
+**Project Name:** Live Location Tracking System  
+**Problem Statement Source:** National Security Guard (NSG), Ministry of Home Affairs (2024)
