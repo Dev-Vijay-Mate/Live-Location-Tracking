@@ -1,7 +1,7 @@
 
 # Live Location Tracking System
 
-A real-time 3D location tracking system designed to visualize the positions of personnel operating inside complex, multi-storey buildings, including floors and underground basements.
+A real-time 3D indoor location tracking system designed to visualize the positions of personnel operating inside complex, multi-storey buildings, including floors and underground basements.
 
 ## 📌 Problem Statement
 
@@ -16,120 +16,116 @@ In these environments, knowing the precise location of personnel, including thei
 
 Traditional GPS/GSM-based tracking systems primarily provide two-dimensional location information and often fail to determine the exact floor level inside buildings.
 
-This project aims to address this limitation by developing a system capable of tracking personnel in real time and visualizing their positions on existing 3D building models.
+This project aims to address this limitation by developing a system capable of tracking personnel in real time and visualizing their positions on 3D building models.
 
 ## 🎯 Project Objectives
 
 - Enable real-time location tracking of personnel and House Intervention Teams (HITs).
 - Identify the floor or basement level at which personnel are operating.
 - Provide a 3D visualization of personnel positions inside buildings.
-- Integrate tracking information with existing 3D building models.
+- Integrate tracking information with 3D building models.
 - Provide a centralized dashboard for monitoring and situational awareness.
-- Improve location visibility and command-and-control capabilities.
 
-## ⚙️ Proposed System
+## ⚙️ System Overview
 
-The proposed system focuses on combining indoor positioning technologies, location data processing, and 3D visualization.
+This academic software prototype demonstrates indoor floor-level location visualization using simulated device data. The system displays simulated personnel positions in a multi-storey 3D building and updates positions in real time.
 
-### 1. Indoor Location Tracking
-Explore suitable indoor positioning approaches to estimate personnel locations where conventional GPS signals are unreliable.
+### Data Flow
 
-### 2. Floor-Level Detection
-Determine the vertical position of personnel to distinguish between different floors and basement levels.
-
-### 3. Real-Time Data Processing
-Process incoming location updates and make the latest position information available to the visualization system.
-
-### 4. 3D Building Visualization
-Display personnel positions within pre-existing 3D building models, providing a spatial representation of their locations.
-
-### 5. Monitoring Dashboard
-Develop a centralized interface for viewing personnel positions and tracking information.
-
-## 🏗️ High-Level Architecture
-
-```text
-       Indoor Tracking Devices
-                 |
-                 v
-       Location Data Collection
-                 |
-                 v
-        Position Estimation
-                 |
-          +------+------+
-          |             |
-          v             v
-    Floor Detection   Coordinate
-                      Processing
-          |             |
-          +------+------+
-                 |
-                 v
-         Real-Time Backend
-                 |
-                 v
-          Data Transmission
-                 |
-                 v
-       3D Building Visualization
-                 |
-                 v
-        Central Monitoring UI
+```
+Python Location Simulator
+        │
+        ▼
+FastAPI Backend (REST API)
+        │
+        ▼
+PostgreSQL Database
+        │
+        ▼
+WebSocket Broadcast
+        │
+        ▼
+React Frontend + Three.js 3D Visualization
+        │
+        ▼
+Real-Time Monitoring Dashboard
 ```
 
 ## 🛠️ Technology Stack
 
-The final technology stack will be selected during the research and system-design phase.
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React.js, Vite, JavaScript |
+| **3D Visualization** | Three.js, React Three Fiber, Drei |
+| **Backend** | Python, FastAPI |
+| **Database** | PostgreSQL |
+| **Real-Time** | WebSockets |
+| **Simulator** | Python |
 
-Potential technology areas include:
+## 📁 Project Structure
 
-- **Frontend:** React.js / Three.js
-- **Backend:** Node.js / Python
-- **Database:** PostgreSQL
-- **Real-Time Communication:** WebSockets
-- **3D Visualization:** Three.js
-- **Indoor Positioning:** Research into suitable sensor-based positioning technologies
-- **Data Processing:** Python
+```
+live-location-tracking/
+├── frontend/          # React + Vite application
+│   └── src/
+│       ├── components/    # UI components
+│       ├── three/         # 3D building and markers
+│       ├── services/      # API and WebSocket clients
+│       ├── hooks/         # Custom React hooks
+│       └── config/        # Building configuration
+├── backend/           # Python FastAPI application
+│   └── app/
+│       ├── api/           # Route handlers
+│       ├── models/        # Database models
+│       ├── schemas/       # Validation schemas
+│       ├── services/      # Business logic
+│       └── core/          # Config and database
+├── simulator/         # Python location simulator
+├── docs/              # Project documentation
+└── README.md
+```
 
-## 📋 Key Challenges
+## 🚀 Quick Start
 
-- Accurate indoor positioning in GPS-denied environments.
-- Reliable floor and basement identification.
-- Minimizing location estimation errors.
-- Handling real-time location updates.
-- Integrating tracking coordinates with existing 3D building models.
-- Maintaining reliable system performance.
+> Setup instructions will be added as development progresses.
+
+### Prerequisites
+
+- Node.js (v18+)
+- Python (3.10+)
+- PostgreSQL (14+)
+
+## 📋 Features
+
+- [x] Project architecture and documentation
+- [ ] Interactive 3D multi-storey building
+- [ ] Device/personnel position markers
+- [ ] Real-time location updates via WebSocket
+- [ ] Device status monitoring (online/offline/stale)
+- [ ] Floor selection and filtering
+- [ ] Location history
+- [ ] Simulation controls
+- [ ] Professional monitoring dashboard
+
+## 📖 Documentation
+
+Detailed documentation is available in the [`docs/`](docs/) directory:
+
+- [Project Context](docs/PROJECT_CONTEXT.md) — Problem statement and objectives
+- [Architecture](docs/ARCHITECTURE.md) — System design and data flow
+- [API Contract](docs/API_CONTRACT.md) — Endpoints and data formats
+- [Team Responsibilities](docs/TEAM_RESPONSIBILITIES.md) — Member roles and deliverables
+- [Development Plan](docs/DEVELOPMENT_PLAN.md) — 14-day roadmap
 
 ## 🚧 Project Status
 
-**Status:** Planning and Research
-
-The project is currently in the problem analysis and system-design phase.
-
-Planned development milestones:
-
-- [ ] Requirement analysis
-- [ ] Research on indoor positioning technologies
-- [ ] System architecture design
-- [ ] Database and backend development
-- [ ] Real-time location processing
-- [ ] 3D building model integration
-- [ ] Monitoring dashboard development
-- [ ] Testing and performance evaluation
-- [ ] Final documentation
-
-## 🎯 Expected Outcome
-
-A functional prototype capable of displaying simulated or test-environment personnel locations in real time on a multi-storey 3D building model, including floor-level identification.
-
-The system will demonstrate how indoor positioning and 3D visualization can improve spatial awareness in complex indoor environments.
+**Status:** Day 1–2 — Foundation & Setup
 
 ## ⚠️ Disclaimer
 
 This project is an academic software-development initiative based on the NSG problem statement. It is intended for research, educational purposes, and controlled testing environments.
 
-It does not represent an officially deployed NSG system.
+It does not represent an officially deployed NSG system. Simulated tracking does not demonstrate real-world indoor positioning accuracy.
 
 ## 👨‍💻 Contributors
 
