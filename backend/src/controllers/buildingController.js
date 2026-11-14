@@ -5,6 +5,7 @@
 
 const buildingService = require('../services/buildingService');
 const floorService = require('../services/floorService');
+const deviceAssignmentService = require('../services/deviceAssignmentService');
 
 async function getAllBuildings(req, res, next) {
   try {
@@ -113,6 +114,20 @@ async function createBuildingFloor(req, res, next) {
   }
 }
 
+async function getBuildingDevices(req, res, next) {
+  try {
+    const { buildingId } = req.params;
+    const devices = await deviceAssignmentService.listDevicesByBuilding(buildingId);
+    res.status(200).json({
+      success: true,
+      data: devices,
+      count: devices.length,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getAllBuildings,
   getBuilding,
@@ -121,4 +136,5 @@ module.exports = {
   setBuildingStatus,
   getBuildingFloors,
   createBuildingFloor,
+  getBuildingDevices,
 };

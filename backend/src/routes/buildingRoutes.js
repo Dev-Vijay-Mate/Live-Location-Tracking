@@ -18,4 +18,7 @@ router.patch('/:buildingId/status', buildingController.setBuildingStatus);
 router.get('/:buildingId/floors', buildingController.getBuildingFloors);
 router.post('/:buildingId/floors', buildingController.createBuildingFloor);
 
+// Nested device routes under a building
+router.get('/:buildingId/devices', buildingController.getBuildingDevices);
+
 module.exports = router;

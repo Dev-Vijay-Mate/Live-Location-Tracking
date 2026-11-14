@@ -11,6 +11,7 @@ const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const healthRoutes = require('./routes/healthRoutes');
 const buildingRoutes = require('./routes/buildingRoutes');
 const floorRoutes = require('./routes/floorRoutes');
+const deviceRoutes = require('./routes/deviceRoutes');
 
 const app = express();
 
@@ -55,6 +56,7 @@ if (config.nodeEnv !== 'test') {
 app.use('/api', healthRoutes);
 app.use('/api/buildings', buildingRoutes);
 app.use('/api/floors', floorRoutes);
+app.use('/api/devices', deviceRoutes);
 
 // 5. 404 Handler (for non-existent endpoints)
 app.use(notFoundHandler);

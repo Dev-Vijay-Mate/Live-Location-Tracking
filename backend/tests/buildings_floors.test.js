@@ -18,6 +18,10 @@ describe('Phase 4: Building & Floor Management APIs', () => {
     await runMigrations();
     await seed();
 
+    // Clean up test data from any previous runs
+    await pool.query("DELETE FROM floors WHERE building_id LIKE 'BUILDING_TEST_%'");
+    await pool.query("DELETE FROM buildings WHERE building_id LIKE 'BUILDING_TEST_%'");
+
     await new Promise((resolve) => {
       server = http.createServer(app);
       server.listen(0, '127.0.0.1', () => {
