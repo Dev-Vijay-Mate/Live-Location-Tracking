@@ -37,7 +37,15 @@ function errorHandler(err, req, res, next) { // eslint-disable-line no-unused-va
     });
   }
 
-  const statusCode = err.statusCode || (err.status && typeof err.status === 'number' ? err.status : 500);
+  // Map PostgreSQL error codes to appropriate HTTP status codes
+  let statusCode = err.statusCode || (err.status && typeof err.status === 'number' ? err.status : null);
+  if (!statusCode && err.code) {
+    if (err.code === '23514') statusCode = 400; // check_violation (bounds, timestamps)
+    else if (err.code === '23505') statusCode = 409; // unique_violation
+    else if (err.code === '23503') statusCode = 400; // foreign_key_violation
+    else if (err.code === '23001') statusCode = 400; // restrict_violation
+  }
+  statusCode = statusCode || 500;
   const isProduction = process.env.NODE_ENV === 'production';
 
   const response = {

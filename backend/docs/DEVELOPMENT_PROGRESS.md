@@ -16,9 +16,9 @@
 | **Phase 4** | Building & Floor Management REST APIs | ✅ Completed & Pushed | `496810a` |
 | **Phase 5** | Device Management REST APIs | ✅ Completed & Tested | Pending Commit |
 | **Phase 6** | Device Assignment Management | ✅ Completed & Tested | Pending Commit |
-| **Phase 7** | Location Ingestion & Processing Pipeline | 🟡 In Progress | Pending |
-| **Phase 8** | Location Retrieval APIs (Current & Historical) | ⚪ Queued | Pending |
-| **Phase 9** | Device Connectivity & Stale/Offline Monitoring | ⚪ Queued | Pending |
+| **Phase 7** | Location Ingestion & Processing Pipeline | ✅ Completed & Tested | Pending Commit |
+| **Phase 8** | Location Retrieval APIs (Current & Historical) | ✅ Completed & Tested | Pending Commit |
+| **Phase 9** | Device Connectivity & Stale/Offline Monitoring | 🟡 In Progress | Pending |
 | **Phase 10**| WebSocket Real-Time Broadcasting (`ws`) | ⚪ Queued | Pending |
 | **Phase 11**| JavaScript Synthetic Movement Simulator | ⚪ Queued | Pending |
 | **Phase 12**| Backend Integration Readiness & Protocol Contracts | ⚪ Queued | Pending |
@@ -52,11 +52,19 @@
 - Implemented routes: `GET/POST /api/buildings`, `GET/PUT/PATCH /api/buildings/:buildingId`, `GET/POST /api/buildings/:buildingId/floors`, `GET/PUT /api/floors/:floorId`.
 - Created `tests/buildings_floors.test.js` (14 passing tests, total 30 tests passing).
 
-### Phase 5 & 6: Device Management & Device Assignment APIs
+### Phase 5 & 6: Device Management & Device Assignment APIs (`7ed938a`)
 - Implemented `src/services/deviceService.js`: Device registration, dynamic connectivity calculation (`ONLINE`, `STALE`, `OFFLINE`, `MAINTENANCE`, `DECOMMISSIONED`), administrative status, and soft deactivation.
 - Implemented `src/services/deviceAssignmentService.js`: Transactional assignment and reassignment of devices to buildings, automatic closure of prior active assignments, assignment history, and building-level device rosters.
 - Implemented `src/controllers/deviceController.js`, `src/routes/deviceRoutes.js`, and nested route `GET /api/buildings/:buildingId/devices`.
 - Created `tests/devices_assignments.test.js` (12 passing tests, total 42 tests passing across 4 suites).
+
+### Phase 7 & 8: Location Ingestion & Spatial Retrieval APIs
+- Implemented `src/services/locationService.js`: Strict validation of incoming location packets matching shared contract, validation against floor bounds and device assignment, transactional insert to `location_history`, and upsert to `current_locations` with monotonicity guard preventing older packets from overwriting newer positions.
+- Added post-commit broadcast listener hooks for downstream WebSocket broadcasting.
+- Implemented `src/controllers/locationController.js` and `src/routes/locationRoutes.js`.
+- Implemented retrieval APIs: `GET /api/locations/latest`, `GET /api/locations/latest/:deviceId`, `GET /api/locations/history/:deviceId`, `GET /api/locations/building/:buildingId`, `GET /api/locations/floor/:floorId`, and `GET /api/locations/summary/:deviceId`.
+- Enhanced `src/middleware/errorHandler.js` to map PostgreSQL check and foreign key constraints to clean HTTP 400 Bad Request responses.
+- Created `tests/locations.test.js` (11 passing tests, total 53 tests passing across 5 suites).
 
 ---
 *Updated automatically during autonomous execution.*

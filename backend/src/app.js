@@ -12,6 +12,7 @@ const healthRoutes = require('./routes/healthRoutes');
 const buildingRoutes = require('./routes/buildingRoutes');
 const floorRoutes = require('./routes/floorRoutes');
 const deviceRoutes = require('./routes/deviceRoutes');
+const locationRoutes = require('./routes/locationRoutes');
 
 const app = express();
 
@@ -57,6 +58,7 @@ app.use('/api', healthRoutes);
 app.use('/api/buildings', buildingRoutes);
 app.use('/api/floors', floorRoutes);
 app.use('/api/devices', deviceRoutes);
+app.use('/api/locations', locationRoutes);
 
 // 5. 404 Handler (for non-existent endpoints)
 app.use(notFoundHandler);
