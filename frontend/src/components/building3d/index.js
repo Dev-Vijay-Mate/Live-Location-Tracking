@@ -31,3 +31,4 @@ export {
 } from './mockDevices';
 
 export { default } from './BuildingCanvas';
+

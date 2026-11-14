@@ -187,3 +187,4 @@ export function resolveRoom(x, z, floorId) {
 
   return 'Central Corridor';
 }
+
