@@ -9,6 +9,8 @@ const cors = require('cors');
 const config = require('./config');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const healthRoutes = require('./routes/healthRoutes');
+const buildingRoutes = require('./routes/buildingRoutes');
+const floorRoutes = require('./routes/floorRoutes');
 
 const app = express();
 
@@ -51,6 +53,8 @@ if (config.nodeEnv !== 'test') {
 
 // 4. API Routes
 app.use('/api', healthRoutes);
+app.use('/api/buildings', buildingRoutes);
+app.use('/api/floors', floorRoutes);
 
 // 5. 404 Handler (for non-existent endpoints)
 app.use(notFoundHandler);
