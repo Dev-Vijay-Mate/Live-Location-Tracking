@@ -10,6 +10,7 @@ const router = express.Router();
 
 router.get('/', deviceController.getAllDevices);
 router.post('/', deviceController.registerDevice);
+router.get('/monitoring/health', deviceController.getFleetHealth);
 router.get('/:deviceId', deviceController.getDevice);
 router.put('/:deviceId', deviceController.updateDevice);
 router.patch('/:deviceId/status', deviceController.setDeviceStatus);

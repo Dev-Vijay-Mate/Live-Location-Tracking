@@ -5,6 +5,19 @@
 
 const deviceService = require('../services/deviceService');
 const deviceAssignmentService = require('../services/deviceAssignmentService');
+const deviceStatusService = require('../services/deviceStatusService');
+
+async function getFleetHealth(req, res, next) {
+  try {
+    const summary = await deviceStatusService.getFleetHealthSummary();
+    res.status(200).json({
+      success: true,
+      data: summary,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 
 async function getAllDevices(req, res, next) {
   try {
@@ -177,6 +190,7 @@ async function unassignDevice(req, res, next) {
 }
 
 module.exports = {
+  getFleetHealth,
   getAllDevices,
   getDevice,
   registerDevice,

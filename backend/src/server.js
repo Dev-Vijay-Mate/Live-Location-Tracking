@@ -7,8 +7,12 @@
 const http = require('http');
 const app = require('./app');
 const config = require('./config');
+const { initWebSocketServer, closeWebSocketServer } = require('./websocket');
 
 const server = http.createServer(app);
+
+// Initialize WebSocket server attached to HTTP server
+initWebSocketServer(server);
 
 // Server startup
 server.listen(config.port, () => {
@@ -34,6 +38,7 @@ server.on('error', (err) => {
 // Graceful shutdown handling
 function gracefulShutdown(signal) {
   console.log(`\nReceived ${signal}. Gracefully shutting down...`);
+  closeWebSocketServer();
   server.close(() => {
     console.log('HTTP server closed.');
     process.exit(0);
