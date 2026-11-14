@@ -1,7 +1,42 @@
 import React, { useState } from 'react';
+import Building from './three/Building';
+
+// Sample demonstration personnel units for initial spatial rendering test
+const INITIAL_DEMO_DEVICES = [
+  {
+    device_id: 'DEMO_DEVICE_001',
+    name: 'HIT Alpha-1 (Lead)',
+    floor_id: 'GROUND',
+    position: { x: -8.0, z: -4.0 },
+    status: 'online'
+  },
+  {
+    device_id: 'DEMO_DEVICE_002',
+    name: 'HIT Alpha-2 (Breacher)',
+    floor_id: 'GROUND',
+    position: { x: -6.5, z: -3.5 },
+    status: 'online'
+  },
+  {
+    device_id: 'DEMO_DEVICE_003',
+    name: 'HIT Bravo-1 (Sniper/Overwatch)',
+    floor_id: 'SECOND',
+    position: { x: 10.0, z: 6.0 },
+    status: 'online'
+  },
+  {
+    device_id: 'DEMO_DEVICE_004',
+    name: 'HIT Charlie-1 (Basement Entry)',
+    floor_id: 'BASEMENT',
+    position: { x: 0.0, z: 2.0 },
+    status: 'stale'
+  }
+];
 
 function App() {
   const [activeFloor, setActiveFloor] = useState('ALL');
+  const [devices] = useState(INITIAL_DEMO_DEVICES);
+  const [selectedDeviceId, setSelectedDeviceId] = useState(null);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw' }}>
@@ -38,28 +73,18 @@ function App() {
             color: 'var(--accent-green)',
             fontSize: '0.75rem',
             fontFamily: 'var(--font-mono)'
-          }}>SYSTEM READY</span>
+          }}>3D ENGINE ACTIVE</span>
         </div>
       </header>
 
-      {/* Main Workspace */}
-      <main style={{ flex: 1, position: 'relative', display: 'flex' }}>
-        <div style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexDirection: 'column',
-          gap: '16px',
-          color: 'var(--text-secondary)'
-        }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', color: 'var(--accent-cyan)' }}>
-            [ 3D SPATIAL ENGINE INITIALIZING ]
-          </p>
-          <p style={{ fontSize: '0.85rem', maxWidth: '400px', textAlign: 'center' }}>
-            Vite + React frontend initialized. Ready for Three.js 3D building and WebSocket live tracking integration.
-          </p>
-        </div>
+      {/* Main 3D Spatial Canvas */}
+      <main style={{ flex: 1, position: 'relative' }}>
+        <Building
+          activeFloor={activeFloor}
+          devices={devices}
+          selectedDeviceId={selectedDeviceId}
+          onSelectDevice={setSelectedDeviceId}
+        />
       </main>
     </div>
   );
