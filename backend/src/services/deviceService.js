@@ -35,10 +35,14 @@ async function listDevices({ admin_status, is_active, building_id } = {}) {
     SELECT d.*, 
            a.building_id AS current_building_id,
            b.name AS current_building_name,
-           a.assigned_at AS current_assigned_at
+           a.assigned_at AS current_assigned_at,
+           cl.floor_id AS current_floor_id,
+           cl.x_coordinate AS current_x,
+           cl.z_coordinate AS current_z
     FROM devices d
     LEFT JOIN device_assignments a ON d.device_id = a.device_id AND a.unassigned_at IS NULL
     LEFT JOIN buildings b ON a.building_id = b.building_id
+    LEFT JOIN current_locations cl ON d.device_id = cl.device_id
     WHERE 1=1
   `;
   const params = [];

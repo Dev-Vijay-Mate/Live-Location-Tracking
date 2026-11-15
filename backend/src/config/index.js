@@ -11,7 +11,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const config = {
   // Server
-  port: parseInt(process.env.PORT, 10) || 5001,
+  port: parseInt(process.env.PORT, 10) || 8000,
   nodeEnv: process.env.NODE_ENV || 'development',
   isProduction: process.env.NODE_ENV === 'production',
 

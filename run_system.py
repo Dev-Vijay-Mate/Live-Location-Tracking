@@ -31,6 +31,7 @@ def find_python():
 
 def main():
     parser = argparse.ArgumentParser(description="NSG CQB Location Tracking System Runner")
+    parser.add_argument("--backend", choices=["node", "python"], default="node", help="Primary backend engine (default: node)")
     parser.add_argument("--no-sim", action="store_true", help="Do not start the synthetic location simulator")
     parser.add_argument("--interval", type=float, default=1.5, help="Simulator update interval in seconds")
     args = parser.parse_args()
@@ -42,7 +43,7 @@ def main():
     print("  Command & Control 3D Multi-Storey Indoor Tracking Prototype")
     print("=" * 72)
     print(f"[*] Project Root : {PROJECT_ROOT}")
-    print(f"[*] Python Bin   : {python_bin}")
+    print(f"[*] Backend Type : {args.backend.upper()} (Primary Production Backend)")
     print("[-] Press Ctrl+C at any time to shut down all system processes.\n")
 
     processes = []
@@ -65,17 +66,28 @@ def main():
     signal.signal(signal.SIGINT, shutdown_all)
     signal.signal(signal.SIGTERM, shutdown_all)
 
-    # 1. Start FastAPI Backend
-    print("[1/3] Starting FastAPI Backend on http://localhost:8000 ...")
+    # 1. Start Primary Backend
     backend_env = os.environ.copy()
-    backend_env["PYTHONPATH"] = f"{BACKEND_DIR}:{backend_env.get('PYTHONPATH', '')}"
+    backend_env["PORT"] = "8000"
 
-    backend_proc = subprocess.Popen(
-        [python_bin, "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"],
-        cwd=BACKEND_DIR,
-        env=backend_env
-    )
-    processes.append(("FastAPI Backend", backend_proc))
+    if args.backend == "node":
+        print("[1/3] Starting Primary Node.js Backend (Express/pg/ws) on http://localhost:8000 ...")
+        backend_proc = subprocess.Popen(
+            ["npm", "start"],
+            cwd=BACKEND_DIR,
+            env=backend_env
+        )
+        processes.append(("Node.js Backend", backend_proc))
+    else:
+        print("[1/3] Starting Legacy FastAPI Backend on http://localhost:8000 ...")
+        backend_env["PYTHONPATH"] = f"{BACKEND_DIR}:{backend_env.get('PYTHONPATH', '')}"
+        backend_proc = subprocess.Popen(
+            [python_bin, "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"],
+            cwd=BACKEND_DIR,
+            env=backend_env
+        )
+        processes.append(("FastAPI Backend", backend_proc))
+
     time.sleep(1.5)
 
     # 2. Start Vite Frontend
@@ -87,16 +99,28 @@ def main():
     processes.append(("Vite Frontend", frontend_proc))
     time.sleep(2.0)
 
-    # 3. Start Python CQB Simulator (optional)
+    # 3. Start Telemetry Simulator (optional)
     if not args.no_sim:
-        print(f"[3/3] Starting Python CQB Telemetry Simulator (interval: {args.interval}s) ...")
         sim_env = os.environ.copy()
-        sim_proc = subprocess.Popen(
-            [python_bin, "main.py", "--interval", str(args.interval)],
-            cwd=SIMULATOR_DIR,
-            env=sim_env
-        )
-        processes.append(("CQB Simulator", sim_proc))
+        sim_env["SIMULATOR_INTERVAL_MS"] = str(int(args.interval * 1000))
+        sim_env["API_BASE_URL"] = "http://localhost:8000/api"
+
+        if args.backend == "node":
+            print(f"[3/3] Starting Node.js Kinematic CQB Simulator (interval: {args.interval}s) ...")
+            sim_proc = subprocess.Popen(
+                ["npm", "run", "simulate"],
+                cwd=BACKEND_DIR,
+                env=sim_env
+            )
+            processes.append(("Node.js Simulator", sim_proc))
+        else:
+            print(f"[3/3] Starting Python CQB Telemetry Simulator (interval: {args.interval}s) ...")
+            sim_proc = subprocess.Popen(
+                [python_bin, "main.py", "--interval", str(args.interval)],
+                cwd=SIMULATOR_DIR,
+                env=sim_env
+            )
+            processes.append(("CQB Simulator", sim_proc))
 
     print("\n" + "=" * 72)
     print("  ALL SERVICES ARE RUNNING:")

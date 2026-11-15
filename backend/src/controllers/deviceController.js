@@ -27,9 +27,24 @@ async function getAllDevices(req, res, next) {
       is_active: is_active !== undefined ? is_active === 'true' : undefined,
       building_id,
     });
+
+    const frontendDevices = devices.map((d) => ({
+      device_id: d.device_id,
+      name: d.callsign || d.device_name || `Unit ${d.device_id}`,
+      team: d.callsign || 'House Intervention Team (HIT)',
+      status: (d.connectivity_status || 'offline').toLowerCase(),
+      floor_id: d.current_floor_id || 'GROUND',
+      position: {
+        x: d.current_x !== null && d.current_x !== undefined ? parseFloat(d.current_x) : 15.0,
+        z: d.current_z !== null && d.current_z !== undefined ? parseFloat(d.current_z) : 10.0,
+      },
+      last_seen: d.last_seen_at || new Date().toISOString(),
+    }));
+
     res.status(200).json({
       success: true,
       data: devices,
+      devices: frontendDevices,
       count: devices.length,
     });
   } catch (error) {

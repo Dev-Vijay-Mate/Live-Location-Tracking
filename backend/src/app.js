@@ -22,8 +22,9 @@ const corsOptions = {
     // Allow requests with no origin (like mobile apps, curl, Postman, or simulator scripts)
     if (!origin) return callback(null, true);
 
-    // Allow configured frontend origin (e.g. http://localhost:5173 for Vite)
-    if (config.corsOrigin === '*' || origin === config.corsOrigin) {
+    // Allow configured frontend origin (e.g. http://localhost:3000 for Vite or http://localhost:5173)
+    const allowed = [config.corsOrigin, 'http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5173', 'http://127.0.0.1:5173'];
+    if (config.corsOrigin === '*' || allowed.includes(origin)) {
       return callback(null, true);
     }
 

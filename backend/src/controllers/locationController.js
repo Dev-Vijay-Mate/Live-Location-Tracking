@@ -10,6 +10,9 @@ async function ingestLocation(req, res, next) {
     const result = await locationService.ingestLocation(req.body);
     res.status(201).json({
       success: true,
+      status: 'accepted',
+      device_id: result.device_id,
+      timestamp: result.timestamp,
       data: result,
       message: 'Location ingested and persisted successfully',
     });
@@ -22,9 +25,18 @@ async function getLatestLocations(req, res, next) {
   try {
     const { building_id, floor_id } = req.query;
     const locations = await locationService.getLatestLocations({ building_id, floor_id });
+    const frontendLocations = locations.map((loc) => ({
+      device_id: loc.device_id,
+      building_id: loc.building?.id || 'BUILDING_001',
+      floor_id: loc.floor?.id || 'GROUND',
+      position: loc.position,
+      timestamp: loc.timestamp,
+    }));
+
     res.status(200).json({
       success: true,
       data: locations,
+      locations: frontendLocations,
       count: locations.length,
     });
   } catch (error) {
@@ -56,9 +68,17 @@ async function getDeviceLocationHistory(req, res, next) {
       offset,
       sort,
     });
+    const frontendHistory = history.map((h) => ({
+      floor_id: h.floor?.id || 'GROUND',
+      position: h.position,
+      timestamp: h.timestamp,
+    }));
+
     res.status(200).json({
       success: true,
+      device_id: deviceId,
       data: history,
+      history: frontendHistory,
       count: history.length,
       limit: parseInt(limit, 10) || 100,
       offset: parseInt(offset, 10) || 0,

@@ -26,11 +26,11 @@ function initWebSocketServer(httpServer) {
     noServer: true,
   });
 
-  // Handle HTTP Upgrade request matching config.wsPath
+  // Handle HTTP Upgrade request matching config.wsPath or /ws/locations
   httpServer.on('upgrade', (request, socket, head) => {
     const { pathname } = new URL(request.url, `http://${request.headers.host}`);
 
-    if (pathname === config.wsPath) {
+    if (pathname === config.wsPath || pathname === '/ws/locations' || pathname.startsWith('/ws')) {
       wss.handleUpgrade(request, socket, head, (ws) => {
         wss.emit('connection', ws, request);
       });
@@ -42,6 +42,7 @@ function initWebSocketServer(httpServer) {
   // Connection lifecycle
   wss.on('connection', (ws, req) => {
     const clientId = `client_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const { pathname } = new URL(req.url, `http://${req.headers.host}`);
     const clientState = {
       id: clientId,
       isAlive: true,
@@ -50,13 +51,21 @@ function initWebSocketServer(httpServer) {
     };
     clients.set(ws, clientState);
 
-    // Initial Welcome Message
+    // Initial connection acknowledgment for frontend (matches docs/API_CONTRACT.md)
+    ws.send(JSON.stringify({
+      type: 'connection_ack',
+      message: 'Connected to location tracking server',
+      clientId,
+      timestamp: new Date().toISOString(),
+    }));
+
+    // Welcome handshake for test clients
     ws.send(JSON.stringify({
       type: 'CONNECTED',
       clientId,
       server: 'live-location-tracking-backend',
       timestamp: new Date().toISOString(),
-      wsPath: config.wsPath,
+      wsPath: pathname || config.wsPath,
     }));
 
     // Keepalive Pong receiver
@@ -65,13 +74,22 @@ function initWebSocketServer(httpServer) {
       if (state) state.isAlive = true;
     });
 
-    // Inbound messages (e.g. SUBSCRIBE, UNSUBSCRIBE, PING)
+    // Inbound messages (e.g. SUBSCRIBE, UNSUBSCRIBE, PING, or raw string 'ping')
     ws.on('message', (data) => {
+      const rawStr = data.toString().trim();
+
+      // Support raw text heartbeat from React websocketClient
+      if (rawStr === 'ping') {
+        ws.send('pong');
+        return;
+      }
+
       try {
-        const message = JSON.parse(data.toString());
+        const message = JSON.parse(rawStr);
 
         switch (message.type) {
           case 'PING':
+          case 'ping':
             ws.send(JSON.stringify({ type: 'PONG', timestamp: new Date().toISOString() }));
             break;
 
@@ -151,9 +169,23 @@ function initWebSocketServer(httpServer) {
 function broadcastLocationUpdate(packet) {
   if (!wss || clients.size === 0) return;
 
-  const messageStr = JSON.stringify({
+  const payload = {
+    device_id: packet.device_id,
+    building_id: packet.building_id,
+    floor_id: packet.floor_id,
+    position: packet.position,
+    source: packet.source,
+    timestamp: packet.timestamp,
+  };
+
+  const updateMsg = JSON.stringify({
+    type: 'location_update',
+    data: payload,
+  });
+
+  const updateLegacyMsg = JSON.stringify({
     type: 'LOCATION_UPDATE',
-    data: packet,
+    data: payload,
   });
 
   for (const [ws, state] of clients.entries()) {
@@ -170,7 +202,8 @@ function broadcastLocationUpdate(packet) {
       continue;
     }
 
-    ws.send(messageStr);
+    ws.send(updateMsg);
+    ws.send(updateLegacyMsg);
   }
 }
 
