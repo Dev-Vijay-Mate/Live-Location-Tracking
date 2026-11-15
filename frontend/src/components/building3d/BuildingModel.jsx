@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Html } from '@react-three/drei';
 import {
@@ -238,12 +239,64 @@ function FloorLevel({ floorId, selectedFloor }) {
 }
 
 /**
+ * Animated Tactical Ground Foundation with Radar Sweep & Concentric Rings
+ */
+function TacticalFoundation() {
+  const sweepRef = useRef();
+  const centerX = DIMENSIONS.width / 2;
+  const centerZ = DIMENSIONS.depth / 2;
+  const y = FLOOR_CONFIGS.BASEMENT.elevation - 1.2;
+
+  useFrame(({ clock }) => {
+    if (sweepRef.current) {
+      sweepRef.current.rotation.y = clock.getElapsedTime() * 0.35;
+    }
+  });
+
+  return (
+    <group position={[centerX, y, centerZ]}>
+      {/* 1. Deep Foundation Grid */}
+      <gridHelper args={[65, 30, '#0284c7', '#0f172a']} position={[0, 0, 0]} />
+
+      {/* 2. Rotating Holographic Radar Sweep Line */}
+      <group ref={sweepRef}>
+        <lineSegments>
+          <bufferGeometry>
+            <bufferAttribute
+              attach="attributes-position"
+              count={2}
+              array={new Float32Array([0, 0.05, 0, 32, 0.05, 0])}
+              itemSize={3}
+            />
+          </bufferGeometry>
+          <lineBasicMaterial color="#38bdf8" transparent opacity={0.45} />
+        </lineSegments>
+      </group>
+
+      {/* 3. Concentric Tactical Surveillance Rings */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+        <ringGeometry args={[14.8, 15.0, 64]} />
+        <meshBasicMaterial color="#0284c7" transparent opacity={0.3} side={THREE.DoubleSide} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+        <ringGeometry args={[24.8, 25.0, 64]} />
+        <meshBasicMaterial color="#0284c7" transparent opacity={0.18} side={THREE.DoubleSide} />
+      </mesh>
+    </group>
+  );
+}
+
+/**
  * BuildingModel Component
  * 
  * Renders complete 4-level building structure (Basement, Ground, First, Second).
  * Responds to `selectedFloor` prop ('ALL' or specific floor id) with smooth visual isolation.
  */
 export default function BuildingModel({ selectedFloor = 'ALL' }) {
+  const isIsolated = selectedFloor !== 'ALL';
+  const centerX = DIMENSIONS.width / 2;
+  const centerZ = DIMENSIONS.depth / 2;
+
   return (
     <group name="LiveTracking_BuildingModel">
       {/* Structural Multi-Storey Floors */}
@@ -255,11 +308,19 @@ export default function BuildingModel({ selectedFloor = 'ALL' }) {
         />
       ))}
 
-      {/* Deep Foundation Sub-Grid (below Basement) */}
-      <gridHelper
-        args={[50, 25, '#0284c7', '#0f172a']}
-        position={[DIMENSIONS.width / 2, FLOOR_CONFIGS.BASEMENT.elevation - 1.2, DIMENSIONS.depth / 2]}
-      />
+      {/* Central Tactical Stairwell / Elevator Core Shaft */}
+      <mesh position={[centerX, 2.0, centerZ]}>
+        <boxGeometry args={[2.5, 16.0, 2.5]} />
+        <meshStandardMaterial
+          color="#0284c7"
+          transparent
+          opacity={isIsolated ? 0.04 : 0.12}
+          wireframe
+        />
+      </mesh>
+
+      {/* Animated Tactical Foundation with Radar Sweep */}
+      <TacticalFoundation />
     </group>
   );
 }
