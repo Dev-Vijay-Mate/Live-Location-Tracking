@@ -30,21 +30,21 @@ function FloorTacticalLabel({ floorConfig, isSelected, isIsolated }) {
         alignItems: 'center',
         gap: '8px',
         padding: '3px 8px',
-        background: isSelected ? 'rgba(14, 165, 233, 0.95)' : 'rgba(15, 23, 42, 0.85)',
-        border: `1px solid ${isSelected ? '#38bdf8' : '#334155'}`,
+        background: isSelected ? 'rgba(245, 158, 11, 0.95)' : 'rgba(15, 23, 42, 0.85)',
+        border: `1px solid ${isSelected ? '#fbbf24' : '#334155'}`,
         borderRadius: '4px',
-        color: isSelected ? '#030712' : '#e2e8f0',
+        color: isSelected ? '#0b0e14' : '#e2e8f0',
         fontFamily: 'JetBrains Mono, monospace',
         fontSize: '11px',
         fontWeight: 700,
-        boxShadow: isSelected ? '0 0 16px rgba(14, 165, 233, 0.6)' : '0 2px 8px rgba(0,0,0,0.4)',
+        boxShadow: isSelected ? '0 0 16px rgba(245, 158, 11, 0.6)' : '0 2px 8px rgba(0,0,0,0.4)',
         whiteSpace: 'nowrap',
         transition: 'all 0.3s ease'
       }}>
         <span style={{
           padding: '1px 4px',
-          background: isSelected ? '#0284c7' : '#1e293b',
-          color: isSelected ? '#ffffff' : '#38bdf8',
+          background: isSelected ? '#78350f' : '#1e293b',
+          color: isSelected ? '#fef08a' : '#fbbf24',
           borderRadius: '2px',
           fontSize: '9px',
           fontWeight: 800
@@ -87,7 +87,7 @@ function FloorLevel({ floorId, selectedFloor }) {
   const slabEdgesGeom = useMemo(() => new THREE.EdgesGeometry(slabBoxGeom), [slabBoxGeom]);
 
   const baseColor = floorConfig.color;
-  const accentColor = isSelected ? '#38bdf8' : floorConfig.accentColor;
+  const accentColor = isSelected ? '#fbbf24' : floorConfig.accentColor;
 
   return (
     <group name={`FloorLevel_${floorId}`}>
@@ -217,7 +217,7 @@ function FloorLevel({ floorId, selectedFloor }) {
             <mesh key={`col_${idx}`} position={[colX, elevation + wallHeight / 2, colZ]}>
               <boxGeometry args={[0.5, wallHeight, 0.5]} />
               <meshStandardMaterial
-                color={isSelected ? '#38bdf8' : '#334155'}
+                color={isSelected ? '#fbbf24' : '#334155'}
                 roughness={0.3}
                 metalness={0.3}
                 transparent
@@ -256,7 +256,7 @@ function TacticalFoundation() {
   return (
     <group position={[centerX, y, centerZ]}>
       {/* 1. Deep Foundation Grid */}
-      <gridHelper args={[65, 30, '#0284c7', '#0f172a']} position={[0, 0, 0]} />
+      <gridHelper args={[65, 30, '#78350f', '#121722']} position={[0, 0, 0]} />
 
       {/* 2. Rotating Holographic Radar Sweep Line */}
       <group ref={sweepRef}>
@@ -269,18 +269,18 @@ function TacticalFoundation() {
               itemSize={3}
             />
           </bufferGeometry>
-          <lineBasicMaterial color="#38bdf8" transparent opacity={0.45} />
+          <lineBasicMaterial color="#f59e0b" transparent opacity={0.5} />
         </lineSegments>
       </group>
 
       {/* 3. Concentric Tactical Surveillance Rings */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
         <ringGeometry args={[14.8, 15.0, 64]} />
-        <meshBasicMaterial color="#0284c7" transparent opacity={0.3} side={THREE.DoubleSide} />
+        <meshBasicMaterial color="#d97706" transparent opacity={0.35} side={THREE.DoubleSide} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
         <ringGeometry args={[24.8, 25.0, 64]} />
-        <meshBasicMaterial color="#0284c7" transparent opacity={0.18} side={THREE.DoubleSide} />
+        <meshBasicMaterial color="#92400e" transparent opacity={0.22} side={THREE.DoubleSide} />
       </mesh>
     </group>
   );
@@ -312,9 +312,9 @@ export default function BuildingModel({ selectedFloor = 'ALL' }) {
       <mesh position={[centerX, 2.0, centerZ]}>
         <boxGeometry args={[2.5, 16.0, 2.5]} />
         <meshStandardMaterial
-          color="#0284c7"
+          color="#78350f"
           transparent
-          opacity={isIsolated ? 0.04 : 0.12}
+          opacity={isIsolated ? 0.04 : 0.15}
           wireframe
         />
       </mesh>

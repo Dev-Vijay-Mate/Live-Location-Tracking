@@ -10,7 +10,7 @@ import { mapTo3DPosition } from '../config/coordinateMapping';
 export default function DeviceTrail({
   history = [],
   activeFloor = 'ALL',
-  color = '#06b6d4'
+  color = '#f59e0b'
 }) {
   if (!history || history.length < 2) return null;
 

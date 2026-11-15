@@ -83,9 +83,9 @@ function SceneLighting() {
         shadow-camera-top={25}
         shadow-camera-bottom={-25}
       />
-      {/* Cool blue tactical rim / fill lights */}
-      <directionalLight position={[-25, 25, -20]} intensity={0.5} color="#38bdf8" />
-      <pointLight position={[DIMENSIONS.width / 2, -2, DIMENSIONS.depth / 2]} intensity={0.6} color="#0284c7" />
+      {/* Tactical warm rim & fill lights */}
+      <directionalLight position={[-25, 25, -20]} intensity={0.4} color="#f59e0b" />
+      <pointLight position={[DIMENSIONS.width / 2, -2, DIMENSIONS.depth / 2]} intensity={0.5} color="#d97706" />
     </>
   );
 }
@@ -135,7 +135,7 @@ export default function BuildingCanvas({
         position: 'relative',
         width: '100%',
         height: '100%',
-        background: '#090d16',
+        background: '#0b0e14',
         overflow: 'hidden',
         ...style
       }}
@@ -179,7 +179,7 @@ export default function BuildingCanvas({
             <DeviceTrail
               history={selectedDeviceHistory}
               activeFloor={selectedFloor}
-              color="#06b6d4"
+              color="#f59e0b"
             />
           )}
         </Suspense>
@@ -195,10 +195,10 @@ export default function BuildingCanvas({
             right: '16px',
             display: 'flex',
             gap: '6px',
-            background: 'rgba(15, 23, 42, 0.85)',
+            background: 'rgba(11, 14, 20, 0.90)',
             padding: '6px',
             borderRadius: '6px',
-            border: '1px solid #1e293b',
+            border: '1px solid #2a3447',
             backdropFilter: 'blur(8px)',
             zIndex: 10
           }}>
@@ -206,13 +206,14 @@ export default function BuildingCanvas({
               type="button"
               onClick={() => setCameraPreset('default')}
               style={{
-                background: cameraPreset === 'default' ? '#0284c7' : '#1e293b',
-                color: '#fff',
-                border: 'none',
-                padding: '4px 8px',
+                background: cameraPreset === 'default' ? '#f59e0b' : '#182030',
+                color: cameraPreset === 'default' ? '#0b0e14' : '#e2e8f0',
+                border: cameraPreset === 'default' ? '1px solid #fbbf24' : '1px solid #2a3447',
+                padding: '4px 9px',
                 borderRadius: '4px',
                 fontSize: '10px',
                 fontFamily: 'JetBrains Mono, monospace',
+                fontWeight: 700,
                 cursor: 'pointer'
               }}
             >
@@ -222,13 +223,14 @@ export default function BuildingCanvas({
               type="button"
               onClick={() => setCameraPreset('iso')}
               style={{
-                background: cameraPreset === 'iso' ? '#0284c7' : '#1e293b',
-                color: '#fff',
-                border: 'none',
-                padding: '4px 8px',
+                background: cameraPreset === 'iso' ? '#f59e0b' : '#182030',
+                color: cameraPreset === 'iso' ? '#0b0e14' : '#e2e8f0',
+                border: cameraPreset === 'iso' ? '1px solid #fbbf24' : '1px solid #2a3447',
+                padding: '4px 9px',
                 borderRadius: '4px',
                 fontSize: '10px',
                 fontFamily: 'JetBrains Mono, monospace',
+                fontWeight: 700,
                 cursor: 'pointer'
               }}
             >
@@ -238,13 +240,14 @@ export default function BuildingCanvas({
               type="button"
               onClick={() => setCameraPreset('top')}
               style={{
-                background: cameraPreset === 'top' ? '#0284c7' : '#1e293b',
-                color: '#fff',
-                border: 'none',
-                padding: '4px 8px',
+                background: cameraPreset === 'top' ? '#f59e0b' : '#182030',
+                color: cameraPreset === 'top' ? '#0b0e14' : '#e2e8f0',
+                border: cameraPreset === 'top' ? '1px solid #fbbf24' : '1px solid #2a3447',
+                padding: '4px 9px',
                 borderRadius: '4px',
                 fontSize: '10px',
                 fontFamily: 'JetBrains Mono, monospace',
+                fontWeight: 700,
                 cursor: 'pointer'
               }}
             >
@@ -257,8 +260,8 @@ export default function BuildingCanvas({
             position: 'absolute',
             bottom: '16px',
             left: '16px',
-            background: 'rgba(15, 23, 42, 0.90)',
-            border: '1px solid #1e293b',
+            background: 'rgba(11, 14, 20, 0.92)',
+            border: '1px solid #2a3447',
             borderRadius: '6px',
             padding: '8px 14px',
             fontSize: '11px',
@@ -278,7 +281,7 @@ export default function BuildingCanvas({
                 backgroundColor: '#10b981',
                 boxShadow: '0 0 8px #10b981'
               }} />
-              <span style={{ color: '#06b6d4', fontWeight: 700 }}>VIEW:</span>
+              <span style={{ color: '#f59e0b', fontWeight: 700 }}>VIEW:</span>
               <span style={{ color: '#f8fafc', fontWeight: 600 }}>
                 {selectedFloor === 'ALL'
                   ? 'ALL FLOORS (FULL COMPLEX)'
@@ -290,14 +293,14 @@ export default function BuildingCanvas({
 
             <div>
               <span style={{ color: '#94a3b8' }}>TRACKED UNITS: </span>
-              <strong style={{ color: '#38bdf8' }}>{devicesOnActiveFloor.length}</strong>
+              <strong style={{ color: '#fbbf24' }}>{devicesOnActiveFloor.length}</strong>
               <span style={{ color: '#64748b' }}> / {devices.length}</span>
             </div>
 
             {selectedDeviceId && (
               <>
                 <span style={{ color: '#334155' }}>|</span>
-                <div style={{ color: '#fbbf24' }}>
+                <div style={{ color: '#f59e0b' }}>
                   SELECTED: <strong>{selectedDeviceId}</strong>
                 </div>
               </>
@@ -308,4 +311,3 @@ export default function BuildingCanvas({
     </div>
   );
 }
-

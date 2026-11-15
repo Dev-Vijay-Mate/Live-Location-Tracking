@@ -4,21 +4,17 @@ import FloorSelector from './FloorSelector';
 import DevicePanel from './DevicePanel';
 import StatusPanel from './StatusPanel';
 import {
+  Activity,
+  Bell,
+  CircleDot,
+  Radio,
   Shield,
-  Play,
-  Square,
   Volume2,
   VolumeX,
-  Crosshair,
-  Maximize2
+  Zap
 } from 'lucide-react';
 import { tacticalAudio } from '../services/audioEffects';
 
-/**
- * NSG CQB Command & Control Dashboard
- * Integrates 3D spatial multi-storey building, real-time tactical roster,
- * floor isolation controls, sound synthesizer, and telemetry health metrics.
- */
 export default function Dashboard({
   devices = [],
   activeFloor = 'ALL',
@@ -32,6 +28,10 @@ export default function Dashboard({
   lastUpdated = null
 }) {
   const [audioEnabled, setAudioEnabled] = useState(false);
+  const onlineCount = devices.filter((device) => device.status === 'online').length;
+  const activeFloorCount = activeFloor === 'ALL'
+    ? devices.length
+    : devices.filter((device) => device.floor_id === activeFloor).length;
 
   const handleAudioToggle = () => {
     const isNowOn = tacticalAudio.toggle();
@@ -39,142 +39,45 @@ export default function Dashboard({
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100vh',
-      width: '100vw',
-      backgroundColor: 'var(--bg-primary)',
-      overflow: 'hidden',
-      position: 'relative'
-    }}>
-      {/* 1. Tactical Command Header */}
-      <header style={{
-        height: '58px',
-        backgroundColor: 'var(--bg-secondary)',
-        borderBottom: '1px solid var(--border-color)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 20px',
-        zIndex: 30,
-        boxShadow: '0 2px 16px rgba(0,0,0,0.5)'
-      }}>
-        {/* NSG Emblem, Mission Title & Classification */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '6px',
-            backgroundColor: 'rgba(6, 182, 212, 0.15)',
-            border: '1px solid #06b6d4',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 12px rgba(6, 182, 212, 0.35)'
-          }}>
-            <Shield size={20} color="#06b6d4" />
+    <div className="app-shell">
+      <header className="topbar">
+        <div className="brand-lockup">
+          <div className="brand-mark" aria-hidden="true">
+            <Shield size={22} strokeWidth={2.2} />
           </div>
-
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <h1 style={{ fontSize: '1.05rem', fontWeight: 800, letterSpacing: '0.06em', color: '#f8fafc', lineHeight: 1.1 }}>
-                NSG CQB LIVE TRACKING SYSTEM
-              </h1>
-              <span style={{
-                fontSize: '9px',
-                fontFamily: 'JetBrains Mono, monospace',
-                padding: '1px 6px',
-                borderRadius: '3px',
-                backgroundColor: 'rgba(239, 68, 68, 0.2)',
-                border: '1px solid #ef4444',
-                color: '#ef4444',
-                fontWeight: 800,
-                letterSpacing: '0.05em'
-              }} className="anim-alert-pulse">
-                DEFCON 2 // LIVE C2
-              </span>
+            <div className="brand-title-row">
+              <h1>Live Location Command</h1>
+              <span className="live-badge"><CircleDot size={11} /> LIVE</span>
             </div>
-            <span style={{ fontSize: '10.5px', color: '#64748b', fontFamily: 'JetBrains Mono, monospace' }}>
-              MINISTRY OF HOME AFFAIRS (INDIA) • NATIONAL SECURITY GUARD
-            </span>
+            <p>Indoor situational awareness <span>•</span> CQB training facility</p>
           </div>
         </div>
 
-        {/* Center / Right Tactical Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          {/* Audio Chime Alerts Toggle */}
+        <div className="topbar-actions">
+          <div className={`connection-pill ${isConnected ? 'is-connected' : 'is-disconnected'}`}>
+            <Radio size={14} />
+            <span>{isConnected ? 'Stream connected' : 'Using local demo data'}</span>
+          </div>
           <button
             type="button"
+            className={`icon-button ${audioEnabled ? 'is-active' : ''}`}
             onClick={handleAudioToggle}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '6px 12px',
-              borderRadius: '4px',
-              backgroundColor: audioEnabled ? 'rgba(6, 182, 212, 0.18)' : 'rgba(22, 32, 53, 0.6)',
-              border: audioEnabled ? '1px solid #06b6d4' : '1px solid #24344d',
-              color: audioEnabled ? '#38bdf8' : '#64748b',
-              fontSize: '11px',
-              fontFamily: 'JetBrains Mono, monospace',
-              fontWeight: 700,
-              cursor: 'pointer',
-              transition: 'all 0.15s ease'
-            }}
-            title={audioEnabled ? 'Mute Tactical Audio' : 'Enable Tactical Audio Alerts'}
+            title={audioEnabled ? 'Mute audio alerts' : 'Enable audio alerts'}
+            aria-label={audioEnabled ? 'Mute audio alerts' : 'Enable audio alerts'}
           >
-            {audioEnabled ? <Volume2 size={13} /> : <VolumeX size={13} />}
-            <span>AUDIO: {audioEnabled ? 'ON' : 'MUTED'}</span>
+            {audioEnabled ? <Volume2 size={17} /> : <VolumeX size={17} />}
           </button>
-
-          {/* Simulation Toggle Control */}
           {onToggleSimulation && (
-            <button
-              type="button"
-              onClick={onToggleSimulation}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '6px 14px',
-                borderRadius: '4px',
-                backgroundColor: isSimulating ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)',
-                border: isSimulating ? '1px solid #ef4444' : '1px solid #10b981',
-                color: isSimulating ? '#ef4444' : '#10b981',
-                fontSize: '11px',
-                fontFamily: 'JetBrains Mono, monospace',
-                fontWeight: 700,
-                cursor: 'pointer',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              {isSimulating ? <Square size={12} /> : <Play size={12} />}
-              <span>{isSimulating ? 'HALT KINEMATICS' : 'RESUME KINEMATICS'}</span>
+            <button type="button" className="simulation-button" onClick={onToggleSimulation}>
+              <Zap size={14} />
+              {isSimulating ? 'Demo running' : 'Resume demo'}
             </button>
           )}
-
-          {/* Complex & Facility Tag */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '5px 12px',
-            background: '#162035',
-            border: '1px solid #24344d',
-            borderRadius: '4px',
-            fontSize: '11px',
-            fontFamily: 'JetBrains Mono, monospace'
-          }}>
-            <span style={{ color: '#64748b' }}>COMPLEX:</span>
-            <span style={{ color: '#38bdf8', fontWeight: 700 }}>DEMO_BLDG_001</span>
-          </div>
         </div>
       </header>
 
-      {/* 2. Middle Workspace: Sidebar + 3D Viewport */}
-      <div style={{ flex: 1, display: 'flex', position: 'relative', overflow: 'hidden' }}>
-        {/* Left Operational Personnel Roster */}
+      <div className="workspace">
         <DevicePanel
           devices={devices}
           selectedDeviceId={selectedDeviceId}
@@ -182,33 +85,46 @@ export default function Dashboard({
           activeFloor={activeFloor}
         />
 
-        {/* Center / 3D Canvas Viewport */}
-        <div style={{ flex: 1, position: 'relative', height: '100%' }}>
-          {/* Top-Right Storey Selector Overlay */}
-          <FloorSelector
-            activeFloor={activeFloor}
-            onSelectFloor={setActiveFloor}
-            devices={devices}
-          />
-
-          {/* 3D Scene Viewport (Member 1 Building Module + Trajectory Path) */}
-          <BuildingCanvas
-            selectedFloor={activeFloor}
-            onSelectFloor={setActiveFloor}
-            devices={devices}
-            selectedDeviceId={selectedDeviceId}
-            onSelectDevice={setSelectedDeviceId}
-            selectedDeviceHistory={selectedDeviceHistory}
-          />
-        </div>
+        <main className="map-workspace">
+          <div className="map-toolbar">
+            <div>
+              <div className="eyebrow"><Activity size={13} /> FACILITY OVERVIEW</div>
+              <h2>Building telemetry map</h2>
+              <p>Real-time position data across all monitored floors</p>
+            </div>
+            <div className="map-summary">
+              <div><strong>{activeFloorCount}</strong><span>visible units</span></div>
+              <div><strong>{onlineCount}</strong><span>online now</span></div>
+              <div className="last-sync">
+                <Bell size={13} />
+                <span>{lastUpdated ? 'just synced' : 'awaiting sync'}</span>
+              </div>
+            </div>
+          </div>
+          <div className="canvas-frame">
+            <BuildingCanvas
+              selectedFloor={activeFloor}
+              onSelectFloor={setActiveFloor}
+              devices={devices}
+              selectedDeviceId={selectedDeviceId}
+              onSelectDevice={setSelectedDeviceId}
+              selectedDeviceHistory={selectedDeviceHistory}
+            />
+            <FloorSelector
+              activeFloor={activeFloor}
+              onSelectFloor={setActiveFloor}
+              devices={devices}
+            />
+            <div className="map-legend" aria-label="Map legend">
+              <span><i className="legend-dot online" /> Online</span>
+              <span><i className="legend-dot stale" /> Stale</span>
+              <span><i className="legend-dot offline" /> Offline</span>
+            </div>
+          </div>
+        </main>
       </div>
 
-      {/* 3. Bottom Operational Telemetry Footer */}
-      <StatusPanel
-        isConnected={isConnected}
-        devices={devices}
-        lastUpdated={lastUpdated}
-      />
+      <StatusPanel isConnected={isConnected} devices={devices} lastUpdated={lastUpdated} />
     </div>
   );
 }

@@ -31,15 +31,15 @@ export default function FloorSelector({
   return (
     <div style={{
       position: 'absolute',
-      top: '16px',
+      top: '68px',
       right: '16px',
       zIndex: 25,
       display: 'flex',
       flexDirection: 'column',
       gap: '8px',
-      background: 'rgba(13, 19, 34, 0.90)',
+      background: 'rgba(11, 14, 20, 0.92)',
       backdropFilter: 'blur(12px)',
-      border: '1px solid #24344d',
+      border: '1px solid #2a3447',
       borderRadius: '8px',
       padding: '12px 14px',
       boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)',
@@ -50,7 +50,7 @@ export default function FloorSelector({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        borderBottom: '1px solid #24344d',
+        borderBottom: '1px solid #2a3447',
         paddingBottom: '8px',
         color: '#94a3b8',
         fontSize: '11px',
@@ -59,7 +59,7 @@ export default function FloorSelector({
         letterSpacing: '0.06em'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <Layers size={14} color="#06b6d4" />
+          <Layers size={14} color="#f59e0b" />
           <span>STOREY MATRIX</span>
         </div>
         <span style={{ fontSize: '9px', color: '#64748b' }}>ELEV (m)</span>
@@ -75,14 +75,14 @@ export default function FloorSelector({
           justifyContent: 'space-between',
           padding: '8px 10px',
           borderRadius: '5px',
-          border: activeFloor === 'ALL' ? '1px solid #06b6d4' : '1px solid rgba(36, 52, 77, 0.6)',
-          background: activeFloor === 'ALL' ? 'rgba(6, 182, 212, 0.2)' : 'rgba(22, 32, 53, 0.6)',
-          color: activeFloor === 'ALL' ? '#38bdf8' : '#cbd5e1',
+          border: activeFloor === 'ALL' ? '1px solid #f59e0b' : '1px solid rgba(42, 52, 71, 0.6)',
+          background: activeFloor === 'ALL' ? 'rgba(245, 158, 11, 0.18)' : 'rgba(24, 32, 48, 0.6)',
+          color: activeFloor === 'ALL' ? '#fbbf24' : '#cbd5e1',
           cursor: 'pointer',
           fontSize: '12px',
           fontWeight: activeFloor === 'ALL' ? 700 : 500,
           transition: 'all 0.15s ease',
-          boxShadow: activeFloor === 'ALL' ? '0 0 10px rgba(6, 182, 212, 0.25)' : 'none'
+          boxShadow: activeFloor === 'ALL' ? '0 0 12px rgba(245, 158, 11, 0.25)' : 'none'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -90,7 +90,7 @@ export default function FloorSelector({
             width: '6px',
             height: '6px',
             borderRadius: '50%',
-            backgroundColor: activeFloor === 'ALL' ? '#38bdf8' : '#64748b'
+            backgroundColor: activeFloor === 'ALL' ? '#fbbf24' : '#64748b'
           }} />
           <span>OVERVIEW (ALL)</span>
         </div>
@@ -101,9 +101,9 @@ export default function FloorSelector({
           padding: '1px 6px',
           borderRadius: '8px',
           background: '#070a12',
-          color: '#38bdf8',
+          color: '#fbbf24',
           fontWeight: 700,
-          border: '1px solid #24344d'
+          border: '1px solid #2a3447'
         }}>
           {devices.length}
         </span>
@@ -128,14 +128,14 @@ export default function FloorSelector({
                 justifyContent: 'space-between',
                 padding: '7px 10px',
                 borderRadius: '5px',
-                border: isSelected ? '1px solid #06b6d4' : '1px solid rgba(36, 52, 77, 0.5)',
-                background: isSelected ? 'rgba(6, 182, 212, 0.22)' : 'rgba(13, 19, 34, 0.7)',
+                border: isSelected ? '1px solid #f59e0b' : '1px solid rgba(42, 52, 71, 0.5)',
+                background: isSelected ? 'rgba(245, 158, 11, 0.20)' : 'rgba(17, 24, 39, 0.65)',
                 color: isSelected ? '#ffffff' : '#94a3b8',
                 cursor: 'pointer',
                 fontSize: '11.5px',
                 fontWeight: isSelected ? 700 : 400,
                 transition: 'all 0.15s ease',
-                boxShadow: isSelected ? '0 0 12px rgba(6, 182, 212, 0.25)' : 'none'
+                boxShadow: isSelected ? '0 0 12px rgba(245, 158, 11, 0.25)' : 'none'
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -143,7 +143,7 @@ export default function FloorSelector({
                   fontFamily: 'JetBrains Mono, monospace',
                   fontWeight: 800,
                   fontSize: '11px',
-                  color: isSelected ? '#38bdf8' : '#64748b',
+                  color: isSelected ? '#fbbf24' : '#64748b',
                   width: '20px'
                 }}>
                   {floor.shortName}
@@ -158,7 +158,7 @@ export default function FloorSelector({
                 <span style={{
                   fontFamily: 'JetBrains Mono, monospace',
                   fontSize: '9.5px',
-                  color: isSelected ? '#38bdf8' : '#64748b'
+                  color: isSelected ? '#f59e0b' : '#64748b'
                 }}>
                   {elevStr}
                 </span>
@@ -168,10 +168,10 @@ export default function FloorSelector({
                   fontFamily: 'JetBrains Mono, monospace',
                   padding: '1px 6px',
                   borderRadius: '8px',
-                  background: count > 0 ? (isSelected ? '#06b6d4' : '#162035') : '#070a12',
-                  color: count > 0 ? (isSelected ? '#030712' : '#38bdf8') : '#475569',
+                  background: count > 0 ? (isSelected ? '#f59e0b' : '#243046') : '#070a12',
+                  color: count > 0 ? (isSelected ? '#0b0e14' : '#fbbf24') : '#475569',
                   fontWeight: 800,
-                  border: count > 0 ? '1px solid #38bdf8' : '1px solid #1e293b'
+                  border: count > 0 ? '1px solid #fbbf24' : '1px solid #1e293b'
                 }}>
                   {count}
                 </span>

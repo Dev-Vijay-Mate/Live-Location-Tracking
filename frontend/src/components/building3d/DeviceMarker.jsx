@@ -187,7 +187,7 @@ export function SingleDeviceMarker({
       {isSelected && (
         <mesh position={[0, 0.35, 0]}>
           <torusGeometry args={[0.55, 0.02, 16, 32]} />
-          <meshBasicMaterial color="#38bdf8" transparent opacity={0.85} />
+          <meshBasicMaterial color="#f59e0b" transparent opacity={0.9} />
         </mesh>
       )}
 
@@ -205,14 +205,14 @@ export function SingleDeviceMarker({
             flexDirection: 'column',
             gap: '2px',
             padding: '4px 8px',
-            background: isSelected ? 'rgba(14, 165, 233, 0.95)' : 'rgba(15, 23, 42, 0.92)',
-            border: `1px solid ${isSelected ? '#38bdf8' : theme.primary}`,
+            background: isSelected ? 'rgba(245, 158, 11, 0.95)' : 'rgba(18, 23, 34, 0.92)',
+            border: `1px solid ${isSelected ? '#fbbf24' : theme.primary}`,
             borderRadius: '4px',
-            color: isSelected ? '#030712' : '#f8fafc',
+            color: isSelected ? '#0b0e14' : '#f8fafc',
             fontFamily: 'JetBrains Mono, monospace',
             fontSize: '10px',
             boxShadow: isSelected
-              ? '0 0 16px rgba(56, 189, 248, 0.7), 0 4px 12px rgba(0,0,0,0.5)'
+              ? '0 0 16px rgba(245, 158, 11, 0.7), 0 4px 12px rgba(0,0,0,0.5)'
               : `0 2px 8px ${theme.glow}, 0 2px 6px rgba(0,0,0,0.5)`,
             transition: 'transform 0.15s ease, box-shadow 0.15s ease',
             whiteSpace: 'nowrap',

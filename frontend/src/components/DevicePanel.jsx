@@ -54,7 +54,7 @@ export default function DevicePanel({
       case 'offline':
         return { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.15)', border: '#ef4444', label: 'OFFLINE' };
       default:
-        return { color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.15)', border: '#06b6d4', label: 'ACTIVE' };
+        return { color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.15)', border: '#f59e0b', label: 'ACTIVE' };
     }
   };
 
@@ -96,15 +96,15 @@ export default function DevicePanel({
           width: '26px',
           height: '26px',
           borderRadius: '50%',
-          backgroundColor: '#0f172a',
-          border: '1px solid #38bdf8',
-          color: '#38bdf8',
+          backgroundColor: '#0b0e14',
+          border: '1px solid #f59e0b',
+          color: '#f59e0b',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
           zIndex: 30,
-          boxShadow: '0 0 10px rgba(6, 182, 212, 0.4)'
+          boxShadow: '0 0 10px rgba(245, 158, 11, 0.4)'
         }}
         title={collapsed ? 'Expand Roster Panel' : 'Collapse Panel'}
       >
@@ -120,7 +120,7 @@ export default function DevicePanel({
           paddingTop: '20px',
           gap: '24px'
         }}>
-          <Users size={18} color="#06b6d4" />
+          <Users size={18} color="#f59e0b" />
           <span style={{
             writingMode: 'vertical-rl',
             transform: 'rotate(180deg)',
@@ -143,7 +143,7 @@ export default function DevicePanel({
             display: 'flex',
             flexDirection: 'column',
             gap: '12px',
-            background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(13, 19, 34, 0.4) 100%)'
+            background: 'linear-gradient(180deg, rgba(17, 24, 39, 0.8) 0%, rgba(11, 14, 20, 0.5) 100%)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -151,13 +151,13 @@ export default function DevicePanel({
                   width: '28px',
                   height: '28px',
                   borderRadius: '4px',
-                  backgroundColor: 'rgba(6, 182, 212, 0.15)',
-                  border: '1px solid rgba(6, 182, 212, 0.4)',
+                  backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                  border: '1px solid rgba(245, 158, 11, 0.4)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center'
                 }}>
-                  <Users size={16} color="#06b6d4" />
+                  <Users size={16} color="#f59e0b" />
                 </div>
                 <div>
                   <h2 style={{ fontSize: '0.9rem', fontWeight: 700, letterSpacing: '0.05em', color: '#f8fafc' }}>
@@ -174,9 +174,9 @@ export default function DevicePanel({
                 fontSize: '11px',
                 padding: '2px 8px',
                 borderRadius: '12px',
-                background: '#162035',
-                color: '#38bdf8',
-                border: '1px solid #24344d',
+                background: '#182030',
+                color: '#fbbf24',
+                border: '1px solid #2a3447',
                 fontWeight: 700
               }}>
                 {filteredDevices.length} / {devices.length}
@@ -193,7 +193,7 @@ export default function DevicePanel({
                 style={{
                   width: '100%',
                   backgroundColor: '#070a12',
-                  border: '1px solid #24344d',
+                  border: '1px solid #2a3447',
                   borderRadius: '5px',
                   padding: '7px 10px',
                   color: '#f8fafc',
@@ -218,9 +218,9 @@ export default function DevicePanel({
                     fontSize: '9.5px',
                     fontFamily: 'JetBrains Mono, monospace',
                     fontWeight: teamFilter === t ? 700 : 500,
-                    background: teamFilter === t ? 'rgba(6, 182, 212, 0.2)' : 'rgba(22, 32, 53, 0.6)',
-                    color: teamFilter === t ? '#38bdf8' : '#64748b',
-                    border: teamFilter === t ? '1px solid #06b6d4' : '1px solid transparent',
+                    background: teamFilter === t ? 'rgba(245, 158, 11, 0.2)' : 'rgba(24, 32, 48, 0.6)',
+                    color: teamFilter === t ? '#fbbf24' : '#64748b',
+                    border: teamFilter === t ? '1px solid #f59e0b' : '1px solid transparent',
                     cursor: 'pointer'
                   }}
                 >
@@ -264,14 +264,14 @@ export default function DevicePanel({
                     style={{
                       padding: '12px',
                       borderRadius: '6px',
-                      backgroundColor: isSelected ? 'rgba(6, 182, 212, 0.12)' : 'rgba(22, 32, 53, 0.45)',
-                      border: isSelected ? '1px solid #06b6d4' : '1px solid rgba(36, 52, 77, 0.7)',
+                      backgroundColor: isSelected ? 'rgba(245, 158, 11, 0.14)' : 'rgba(24, 32, 48, 0.45)',
+                      border: isSelected ? '1px solid #f59e0b' : '1px solid rgba(42, 52, 71, 0.7)',
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '8px',
-                      boxShadow: isSelected ? '0 0 14px rgba(6, 182, 212, 0.2)' : 'none'
+                      boxShadow: isSelected ? '0 0 14px rgba(245, 158, 11, 0.25)' : 'none'
                     }}
                   >
                     {/* Unit Callsign & Live Status */}
@@ -287,7 +287,7 @@ export default function DevicePanel({
                         <span style={{
                           fontSize: '13px',
                           fontWeight: 700,
-                          color: isSelected ? '#38bdf8' : '#f8fafc',
+                          color: isSelected ? '#fbbf24' : '#f8fafc',
                           letterSpacing: '0.02em'
                         }}>
                           {device.name || device.device_id}
@@ -323,11 +323,11 @@ export default function DevicePanel({
                           padding: '1px 5px',
                           borderRadius: '3px',
                           background: '#070a12',
-                          color: '#38bdf8',
+                          color: '#fbbf24',
                           fontWeight: 700,
                           fontFamily: 'JetBrains Mono, monospace',
                           fontSize: '10px',
-                          border: '1px solid #24344d'
+                          border: '1px solid #2a3447'
                         }}>
                           {floorConfig.shortName || device.floor_id}
                         </span>
@@ -354,7 +354,7 @@ export default function DevicePanel({
                       fontSize: '10px',
                       fontFamily: 'JetBrains Mono, monospace',
                       color: '#64748b',
-                      borderTop: '1px solid rgba(36, 52, 77, 0.5)',
+                      borderTop: '1px solid rgba(42, 52, 71, 0.5)',
                       paddingTop: '6px'
                     }}>
                       {/* Biometric Heart Rate */}
@@ -373,13 +373,13 @@ export default function DevicePanel({
 
                       {/* Battery */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <BatteryCharging size={11} color="#06b6d4" />
+                        <BatteryCharging size={11} color="#f59e0b" />
                         <span style={{ color: '#f8fafc', fontWeight: 600 }}>{bio.battery}%</span>
                       </div>
 
                       {/* Selection Hint */}
                       <span style={{
-                        color: isSelected ? '#38bdf8' : '#475569',
+                        color: isSelected ? '#fbbf24' : '#475569',
                         fontWeight: 700
                       }}>
                         {isSelected ? 'TRACKING [3D]' : 'INSPECT'}
