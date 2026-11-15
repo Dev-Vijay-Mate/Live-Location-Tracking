@@ -145,8 +145,16 @@ export function getFloorConfig(floorId) {
  * Clamps coordinates strictly within building physical footprint.
  */
 export function clampCoordinates(x, z) {
-  const validX = Number.isFinite(Number(x)) ? Number(x) : BUILDING_BOUNDS.width / 2;
-  const validZ = Number.isFinite(Number(z)) ? Number(z) : BUILDING_BOUNDS.depth / 2;
+  let validX = Number.isFinite(Number(x)) ? Number(x) : BUILDING_BOUNDS.width / 2;
+  let validZ = Number.isFinite(Number(z)) ? Number(z) : BUILDING_BOUNDS.depth / 2;
+
+  // Support both centered origin [-15, 15] and absolute [0, 30] coordinate frames
+  if (validX < 0) {
+    validX += BUILDING_BOUNDS.width / 2;
+  }
+  if (validZ < 0) {
+    validZ += BUILDING_BOUNDS.depth / 2;
+  }
 
   return {
     x: Math.max(BUILDING_BOUNDS.minX, Math.min(BUILDING_BOUNDS.maxX, validX)),

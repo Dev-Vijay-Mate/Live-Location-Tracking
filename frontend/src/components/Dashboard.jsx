@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import Building from '../three/Building';
+import BuildingCanvas from './building3d/BuildingCanvas';
 import FloorSelector from './FloorSelector';
 import DevicePanel from './DevicePanel';
 import StatusPanel from './StatusPanel';
-import { Shield, Play, Square, RefreshCw } from 'lucide-react';
+import { Shield, Play, Square } from 'lucide-react';
 
 /**
  * Main Monitoring Dashboard Component
@@ -129,9 +129,10 @@ export default function Dashboard({
             devices={devices}
           />
 
-          {/* 3D Scene */}
-          <Building
-            activeFloor={activeFloor}
+          {/* 3D Scene Viewport (Member 1 Building Module) */}
+          <BuildingCanvas
+            selectedFloor={activeFloor}
+            onSelectFloor={setActiveFloor}
             devices={devices}
             selectedDeviceId={selectedDeviceId}
             onSelectDevice={setSelectedDeviceId}

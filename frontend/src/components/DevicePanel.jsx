@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Users, Radio, Crosshair, ChevronLeft, ChevronRight, MapPin, Activity } from 'lucide-react';
 import { resolveRoomName } from '../config/coordinateMapping';
+import { resolveRoom, getFloorConfig } from './building3d/buildingConfig';
 import { BUILDING_CONFIG } from '../config/buildingConfig';
 
 /**
@@ -172,8 +173,8 @@ export default function DevicePanel({
               filteredDevices.map((device) => {
                 const isSelected = device.device_id === selectedDeviceId;
                 const badge = getStatusBadge(device.status);
-                const floorConfig = BUILDING_CONFIG.floors[device.floor_id] || {};
-                const roomName = resolveRoomName(device.position?.x, device.position?.z);
+                const floorConfig = getFloorConfig(device.floor_id) || BUILDING_CONFIG.floors[device.floor_id] || {};
+                const roomName = resolveRoom(device.position?.x, device.position?.z, device.floor_id) || resolveRoomName(device.position?.x, device.position?.z);
 
                 return (
                   <div
