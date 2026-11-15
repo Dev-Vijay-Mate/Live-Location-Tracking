@@ -4,6 +4,7 @@ import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import BuildingModel from './BuildingModel';
 import DeviceMarker from './DeviceMarker';
+import DeviceTrail from '../../three/DeviceTrail';
 import {
   DIMENSIONS,
   getFloorElevation,
@@ -111,6 +112,7 @@ export default function BuildingCanvas({
   selectedDeviceId = null,
   onSelectDevice = null,
   onSelectFloor = null,
+  selectedDeviceHistory = [],
   showOverlay = true,
   style = {},
   className = ''
@@ -173,6 +175,13 @@ export default function BuildingCanvas({
             selectedDeviceId={selectedDeviceId}
             onSelectDevice={onSelectDevice}
           />
+          {selectedDeviceId && selectedDeviceHistory && selectedDeviceHistory.length > 1 && (
+            <DeviceTrail
+              history={selectedDeviceHistory}
+              activeFloor={selectedFloor}
+              color="#06b6d4"
+            />
+          )}
         </Suspense>
       </Canvas>
 

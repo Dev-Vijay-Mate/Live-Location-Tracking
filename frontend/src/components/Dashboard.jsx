@@ -16,6 +16,7 @@ export default function Dashboard({
   setActiveFloor,
   selectedDeviceId = null,
   setSelectedDeviceId,
+  selectedDeviceHistory = [],
   isConnected = true,
   isSimulating = true,
   onToggleSimulation = null,
@@ -136,6 +137,7 @@ export default function Dashboard({
             devices={devices}
             selectedDeviceId={selectedDeviceId}
             onSelectDevice={setSelectedDeviceId}
+            selectedDeviceHistory={selectedDeviceHistory}
           />
         </div>
       </div>

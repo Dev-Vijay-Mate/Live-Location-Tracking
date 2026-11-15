@@ -9,10 +9,17 @@ function App() {
   const [isSimulating, setIsSimulating] = useState(true);
 
   // 1. Manage devices roster state with API fetching and fallback
-  const { devices, updateDevicePosition } = useDevices();
+  const { devices, trajectories, updateDevicePosition, loadDeviceHistory } = useDevices();
 
   // 2. Connect to live WebSocket telemetry stream
   const { isConnected, lastTelemetry } = useWebSocket(updateDevicePosition);
+
+  // Fetch trajectory history from backend when a device is selected
+  useEffect(() => {
+    if (selectedDeviceId) {
+      loadDeviceHistory(selectedDeviceId);
+    }
+  }, [selectedDeviceId, loadDeviceHistory]);
 
   // 3. Optional local patrol animation when backend/simulator is offline
   useEffect(() => {
@@ -54,6 +61,7 @@ function App() {
       setActiveFloor={setActiveFloor}
       selectedDeviceId={selectedDeviceId}
       setSelectedDeviceId={setSelectedDeviceId}
+      selectedDeviceHistory={selectedDeviceId ? (trajectories[selectedDeviceId] || []) : []}
       isConnected={isConnected}
       isSimulating={isSimulating}
       onToggleSimulation={toggleSimulation}
