@@ -134,6 +134,9 @@ function initWebSocketServer(httpServer) {
       ws.ping();
     }
   }, 30000);
+  if (heartbeatInterval && typeof heartbeatInterval.unref === 'function') {
+    heartbeatInterval.unref();
+  }
 
   // Hook into locationService: zero-overhead fan-out post-commit
   locationService.onLocationPersisted(broadcastLocationUpdate);

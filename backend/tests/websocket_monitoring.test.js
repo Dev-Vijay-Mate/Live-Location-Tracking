@@ -12,6 +12,30 @@ const { initWebSocketServer, closeWebSocketServer } = require('../src/websocket'
 const { runMigrations } = require('../src/db/migrate');
 const { seed } = require('../src/db/seed');
 
+function waitForMessage(ws, predicate, timeoutMs = 3000) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      ws.off('message', onMsg);
+      reject(new Error(`Timed out waiting for WebSocket message after ${timeoutMs}ms`));
+    }, timeoutMs);
+
+    function onMsg(data) {
+      try {
+        const msg = JSON.parse(data.toString());
+        if (predicate(msg)) {
+          clearTimeout(timer);
+          ws.off('message', onMsg);
+          resolve(msg);
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    ws.on('message', onMsg);
+  });
+}
+
 describe('Phase 9 & 10: Device Monitoring & WebSocket Broadcasting', () => {
   let server;
   let baseUrl;
@@ -64,15 +88,9 @@ describe('Phase 9 & 10: Device Monitoring & WebSocket Broadcasting', () => {
 
   it('WebSocket client connects and receives welcome handshake', async () => {
     const ws = new WebSocket(wsUrl);
+    const welcomePromise = waitForMessage(ws, (m) => m.type === 'CONNECTED');
 
-    const welcomeMsg = await new Promise((resolve, reject) => {
-      ws.on('open', () => {});
-      ws.on('message', (data) => {
-        resolve(JSON.parse(data.toString()));
-      });
-      ws.on('error', reject);
-    });
-
+    const welcomeMsg = await welcomePromise;
     assert.strictEqual(welcomeMsg.type, 'CONNECTED');
     assert.ok(welcomeMsg.clientId);
     assert.strictEqual(welcomeMsg.server, 'live-location-tracking-backend');
@@ -81,21 +99,12 @@ describe('Phase 9 & 10: Device Monitoring & WebSocket Broadcasting', () => {
 
   it('WebSocket client can send PING and receive PONG', async () => {
     const ws = new WebSocket(wsUrl);
-
     await new Promise((resolve) => ws.on('open', resolve));
 
-    // Consume welcome message
-    await new Promise((resolve) => ws.once('message', resolve));
-
-    // Send PING
+    const pongPromise = waitForMessage(ws, (m) => m.type === 'PONG');
     ws.send(JSON.stringify({ type: 'PING' }));
 
-    const pongMsg = await new Promise((resolve) => {
-      ws.once('message', (data) => {
-        resolve(JSON.parse(data.toString()));
-      });
-    });
-
+    const pongMsg = await pongPromise;
     assert.strictEqual(pongMsg.type, 'PONG');
     assert.ok(pongMsg.timestamp);
     ws.close();
@@ -105,18 +114,10 @@ describe('Phase 9 & 10: Device Monitoring & WebSocket Broadcasting', () => {
     const ws = new WebSocket(wsUrl);
     await new Promise((resolve) => ws.on('open', resolve));
 
-    // Consume welcome message
-    await new Promise((resolve) => ws.once('message', resolve));
-
-    // Prepare promise for incoming broadcast
-    const broadcastPromise = new Promise((resolve) => {
-      ws.on('message', (data) => {
-        const msg = JSON.parse(data.toString());
-        if (msg.type === 'LOCATION_UPDATE') {
-          resolve(msg);
-        }
-      });
-    });
+    const broadcastPromise = waitForMessage(
+      ws,
+      (m) => m.type === 'LOCATION_UPDATE' && m.data.device_id === testDeviceId
+    );
 
     // Ingest location update via HTTP POST
     const locationPayload = {
@@ -150,26 +151,27 @@ describe('Phase 9 & 10: Device Monitoring & WebSocket Broadcasting', () => {
   it('WebSocket filtered subscription receives only matching updates', async () => {
     const ws = new WebSocket(wsUrl);
     await new Promise((resolve) => ws.on('open', resolve));
-    await new Promise((resolve) => ws.once('message', resolve)); // welcome
 
+    const subPromise = waitForMessage(ws, (m) => m.type === 'SUBSCRIBED');
     // Subscribe ONLY to FLOOR_B1
     ws.send(JSON.stringify({
       type: 'SUBSCRIBE',
       floor_id: 'FLOOR_B1',
     }));
 
-    // Wait for subscription confirmation
-    const subConfirm = await new Promise((resolve) => {
-      ws.once('message', (data) => resolve(JSON.parse(data.toString())));
-    });
+    const subConfirm = await subPromise;
     assert.strictEqual(subConfirm.type, 'SUBSCRIBED');
     assert.strictEqual(subConfirm.filters.floor_id, 'FLOOR_B1');
 
     let receivedUnmatched = false;
     ws.on('message', (data) => {
-      const msg = JSON.parse(data.toString());
-      if (msg.type === 'LOCATION_UPDATE' && msg.data.floor_id !== 'FLOOR_B1') {
-        receivedUnmatched = true;
+      try {
+        const msg = JSON.parse(data.toString());
+        if (msg.type === 'LOCATION_UPDATE' && msg.data.floor_id !== 'FLOOR_B1') {
+          receivedUnmatched = true;
+        }
+      } catch (e) {
+        // ignore
       }
     });
 
@@ -187,10 +189,9 @@ describe('Phase 9 & 10: Device Monitoring & WebSocket Broadcasting', () => {
     });
 
     // Small delay to allow any event to arrive
-    await new Promise((r) => setTimeout(r, 50));
+    await new Promise((r) => setTimeout(r, 60));
     assert.strictEqual(receivedUnmatched, false, 'Client should NOT receive update for unsubscribed floor');
 
     ws.close();
   });
 });
-
