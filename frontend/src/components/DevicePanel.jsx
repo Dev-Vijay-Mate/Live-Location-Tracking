@@ -261,6 +261,16 @@ export default function DevicePanel({
                   <div
                     key={device.device_id}
                     onClick={() => handleUnitClick(device.device_id)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        handleUnitClick(device.device_id);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={isSelected}
+                    aria-label={`Inspect ${device.name || device.device_id}`}
                     style={{
                       padding: '12px',
                       borderRadius: '6px',

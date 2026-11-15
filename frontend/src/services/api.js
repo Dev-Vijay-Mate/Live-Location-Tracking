@@ -4,6 +4,7 @@
  */
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const REQUEST_TIMEOUT_MS = 8000;
 
 /**
  * Common fetch helper with timeout and error handling
@@ -19,13 +20,19 @@ async function request(endpoint, options = {}) {
   };
 
   try {
-    const response = await fetch(url, config);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    const response = await fetch(url, { ...config, signal: controller.signal });
+    clearTimeout(timeoutId);
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.message || `HTTP error ${response.status}: ${response.statusText}`);
     }
     return await response.json();
   } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error(`Request timed out after ${REQUEST_TIMEOUT_MS / 1000}s`);
+    }
     console.warn(`[API] Request failed for ${endpoint}:`, error.message);
     throw error;
   }

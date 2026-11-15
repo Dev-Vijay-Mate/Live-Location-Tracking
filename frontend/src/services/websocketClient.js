@@ -44,6 +44,10 @@ export class LocationWebSocketClient {
     }
 
     this.isExplicitlyClosed = false;
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
     const url = this.getSocketUrl();
     console.log(`[WS] Connecting to telemetry stream at: ${url}`);
 
@@ -91,13 +95,14 @@ export class LocationWebSocketClient {
    * Schedules an automatic reconnection attempt with exponential backoff
    */
   scheduleReconnect() {
-    if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+    if (this.isExplicitlyClosed || this.reconnectTimer) return;
 
     this.reconnectAttempts += 1;
     const delay = Math.min(1000 * Math.pow(1.5, this.reconnectAttempts), this.maxReconnectDelay);
     console.log(`[WS] Reconnecting in ${(delay / 1000).toFixed(1)}s (Attempt #${this.reconnectAttempts})...`);
 
     this.reconnectTimer = setTimeout(() => {
+      this.reconnectTimer = null;
       this.connect();
     }, delay);
   }
@@ -126,7 +131,10 @@ export class LocationWebSocketClient {
    */
   disconnect() {
     this.isExplicitlyClosed = true;
-    if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
     this.stopHeartbeat();
 
     if (this.socket) {
