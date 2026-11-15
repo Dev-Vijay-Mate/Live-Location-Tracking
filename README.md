@@ -1,141 +1,168 @@
+# Live Indoor Location Tracking System (NSG CQB Prototype)
 
-# Live Location Tracking System
+[![React](https://img.shields.io/badge/Frontend-React%2018%20%7C%20Vite-61DAFB?logo=react)](https://react.dev/)
+[![Three.js](https://img.shields.io/badge/3D%20Engine-Three.js%20%7C%20R3F-black?logo=three.js)](https://threejs.org/)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI%20%7C%20Python-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
+[![WebSockets](https://img.shields.io/badge/Real--Time-WebSockets-0284c7)](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL%2018%20(w%2F%20fallback)-336791?logo=postgresql)](https://www.postgresql.org/)
 
-A real-time 3D location tracking system designed to visualize the positions of personnel operating inside complex, multi-storey buildings, including floors and underground basements.
-
-## 📌 Problem Statement
-
-**Organization:** National Security Guard (NSG), Ministry of Home Affairs  
-**Year:** 2024  
-**Domain:** Miscellaneous  
-**Category:** Software  
-
-The National Security Guard (NSG) operates in Close Quarters Battle (CQB) environments, where teams operate inside complex structures such as hotels, hospitals, metro stations, and buildings of national importance.
-
-In these environments, knowing the precise location of personnel, including their floor or basement level, is essential for effective command and control.
-
-Traditional GPS/GSM-based tracking systems primarily provide two-dimensional location information and often fail to determine the exact floor level inside buildings.
-
-This project aims to address this limitation by developing a system capable of tracking personnel in real time and visualizing their positions on existing 3D building models.
-
-## 🎯 Project Objectives
-
-- Enable real-time location tracking of personnel and House Intervention Teams (HITs).
-- Identify the floor or basement level at which personnel are operating.
-- Provide a 3D visualization of personnel positions inside buildings.
-- Integrate tracking information with existing 3D building models.
-- Provide a centralized dashboard for monitoring and situational awareness.
-- Improve location visibility and command-and-control capabilities.
-
-## ⚙️ Proposed System
-
-The proposed system focuses on combining indoor positioning technologies, location data processing, and 3D visualization.
-
-### 1. Indoor Location Tracking
-Explore suitable indoor positioning approaches to estimate personnel locations where conventional GPS signals are unreliable.
-
-### 2. Floor-Level Detection
-Determine the vertical position of personnel to distinguish between different floors and basement levels.
-
-### 3. Real-Time Data Processing
-Process incoming location updates and make the latest position information available to the visualization system.
-
-### 4. 3D Building Visualization
-Display personnel positions within pre-existing 3D building models, providing a spatial representation of their locations.
-
-### 5. Monitoring Dashboard
-Develop a centralized interface for viewing personnel positions and tracking information.
-
-## 🏗️ High-Level Architecture
-
-```text
-       Indoor Tracking Devices
-                 |
-                 v
-       Location Data Collection
-                 |
-                 v
-        Position Estimation
-                 |
-          +------+------+
-          |             |
-          v             v
-    Floor Detection   Coordinate
-                      Processing
-          |             |
-          +------+------+
-                 |
-                 v
-         Real-Time Backend
-                 |
-                 v
-          Data Transmission
-                 |
-                 v
-       3D Building Visualization
-                 |
-                 v
-        Central Monitoring UI
-```
-
-## 🛠️ Technology Stack
-
-The final technology stack will be selected during the research and system-design phase.
-
-Potential technology areas include:
-
-- **Frontend:** React.js / Three.js
-- **Backend:** Node.js / Python
-- **Database:** PostgreSQL
-- **Real-Time Communication:** WebSockets
-- **3D Visualization:** Three.js
-- **Indoor Positioning:** Research into suitable sensor-based positioning technologies
-- **Data Processing:** Python
-
-## 📋 Key Challenges
-
-- Accurate indoor positioning in GPS-denied environments.
-- Reliable floor and basement identification.
-- Minimizing location estimation errors.
-- Handling real-time location updates.
-- Integrating tracking coordinates with existing 3D building models.
-- Maintaining reliable system performance.
-
-## 🚧 Project Status
-
-**Status:** Planning and Research
-
-The project is currently in the problem analysis and system-design phase.
-
-Planned development milestones:
-
-- [ ] Requirement analysis
-- [ ] Research on indoor positioning technologies
-- [ ] System architecture design
-- [ ] Database and backend development
-- [ ] Real-time location processing
-- [ ] 3D building model integration
-- [ ] Monitoring dashboard development
-- [ ] Testing and performance evaluation
-- [ ] Final documentation
-
-## 🎯 Expected Outcome
-
-A functional prototype capable of displaying simulated or test-environment personnel locations in real time on a multi-storey 3D building model, including floor-level identification.
-
-The system will demonstrate how indoor positioning and 3D visualization can improve spatial awareness in complex indoor environments.
-
-## ⚠️ Disclaimer
-
-This project is an academic software-development initiative based on the NSG problem statement. It is intended for research, educational purposes, and controlled testing environments.
-
-It does not represent an officially deployed NSG system.
-
-## 👨‍💻 Contributors
-
-**Project Team:** To be updated.
+A real-time 3D indoor tactical location tracking and command-and-control monitoring dashboard designed for House Intervention Teams (HIT) operating inside multi-storey structures and underground basements.
 
 ---
 
-**Project Name:** Live Location Tracking System  
-**Problem Statement Source:** National Security Guard (NSG), Ministry of Home Affairs (2024)
+## 📌 Problem Statement Overview
+
+* **Organization:** National Security Guard (NSG), Ministry of Home Affairs, India
+* **Year:** 2024
+* **Domain:** Miscellaneous (Defense / Tactical Software)
+* **Target Environment:** Close Quarters Battle (CQB) in GPS-denied multi-storey buildings (hotels, hospitals, metro stations)
+
+### Operational Challenge
+Traditional GPS and GSM-based positioning methods cannot penetrate reinforced concrete buildings or identify vertical elevation. Task Force Commanders require real-time 3D situational awareness showing personnel positions across multiple floors (`BASEMENT`, `GROUND`, `FIRST`, `SECOND`) and internal room zones.
+
+---
+
+## ⚙️ System Architecture & Data Flow
+
+```text
+    ┌───────────────────────────┐
+    │  Python CQB Simulator     │  (Multi-agent kinematics with path jitter)
+    └─────────────┬─────────────┘
+                  │  HTTP POST /api/locations
+                  ▼
+    ┌───────────────────────────┐
+    │  FastAPI Backend Server   │  (Pydantic validation & telemetry ingestion)
+    └──────┬─────────────┬──────┘
+           │             │
+    Persist│             │ Broadcast
+           ▼             ▼
+  ┌─────────────┐   ┌───────────────────────────┐
+  │ PostgreSQL  │   │  WebSocket Streaming      │  (ws://localhost:8000/ws/locations)
+  │ (or SQLite) │   └─────────────┬─────────────┘
+  └─────────────┘                 │
+                                  ▼
+                    ┌───────────────────────────┐
+                    │  React Monitoring Client  │  (Reactive hooks & state management)
+                    └─────────────┬─────────────┘
+                                  │
+                                  ▼
+                    ┌───────────────────────────┐
+                    │  Three.js / R3F 3D View   │  (Smooth lerp markers, storeys & rooms)
+                    └───────────────────────────┘
+```
+
+---
+
+## 🚀 One-Click Quick Start
+
+Run the complete system (Backend + Frontend + Simulator) with a single command:
+
+```bash
+# 1. Clone repository
+git clone https://github.com/Dev-Vijay-Mate/Live-Location-Tracking.git
+cd Live-Location-Tracking
+
+# 2. Setup backend virtual environment
+python3 -m venv backend/.venv
+backend/.venv/bin/pip install -r backend/requirements.txt
+
+# 3. Setup frontend dependencies
+cd frontend && npm install && cd ..
+
+# 4. Launch all components together
+python3 run_system.py
+```
+
+### Accessing the Dashboard:
+* **Tactical 3D Dashboard:** [http://localhost:3000](http://localhost:3000)
+* **FastAPI Interactive API Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
+* **API Health Check:** [http://localhost:8000/api/health](http://localhost:8000/api/health)
+* **WebSocket Endpoint:** `ws://localhost:8000/ws/locations`
+
+---
+
+## 🌟 Key Features
+
+1. **Multi-Storey 3D Building Visualization:**
+   - Accurate 3D representations of `BASEMENT` (-4.0m), `GROUND` (0.0m), `FIRST` (+4.0m), and `SECOND` (+8.0m) levels.
+   - Semi-transparent glass walls providing line-of-sight into rooms, corridors, and stairwells.
+   - 3D tactical room labels (`Lobby`, `Briefing Room`, `Server Core`, `Armory`, `Staging Bay`).
+
+2. **Tactical Camera Controls & Presets:**
+   - `OrbitControls` with smooth rotation, zooming, and pan angle constraints.
+   - One-click camera presets: **Perspective**, **Isometric**, **Top-Down (2D Floor Plan)**, and **Side Elevation**.
+   - Storey isolation mode: focus on a single floor while ghosting other storeys.
+
+3. **Live Personnel Markers & Trajectory Trails:**
+   - 3D octahedral unit markers with smooth frame-by-frame vector interpolation (`lerp`) so units glide realistically rather than snapping.
+   - Color-coded status beacons: 🟢 **Online**, 🟡 **Stale**, 🔴 **Offline**.
+   - Dynamic 3D breadcrumb trajectory path (`DeviceTrail`) rendering past movements of selected units.
+
+4. **Centralized Command Interface:**
+   - **Operational Roster Sidebar:** Unit search, callsigns, current floor, room zone, coordinates, and telemetry freshness.
+   - **Storey Selector:** Storey buttons with live personnel count badges.
+   - **Status Footer:** WebSocket health badge, unit readiness breakdown, and synchronized UTC mission clock.
+
+5. **Robust Backend & Simulator:**
+   - Asynchronous Python FastAPI backend with Pydantic request validation and WebSocket broadcaster.
+   - Dual-database support: PostgreSQL with automatic fallback to SQLite when running in local standalone development.
+   - Python CQB simulator with realistic multi-agent waypoint traversal and footstep micro-jitter.
+
+---
+
+## 📁 Repository Structure
+
+```text
+Live-Location-Tracking/
+├── run_system.py                 # Master runner starting all services
+├── frontend/                     # React 18 + Vite + Three.js application
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── building3d/       # 3D Building, Model, Markers, Canvas, and Camera Rig
+│   │   │   ├── Dashboard.jsx     # Master C2 command layout
+│   │   │   ├── DevicePanel.jsx   # Tactical personnel roster & search
+│   │   │   ├── FloorSelector.jsx # Storey isolation HUD
+│   │   │   └── StatusPanel.jsx   # Telemetry status and UTC clock
+│   │   ├── hooks/                # useDevices & useWebSocket custom hooks
+│   │   ├── services/             # REST API and resilient WebSocket clients
+│   │   ├── three/                # DeviceTrail and 3D utilities
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   └── package.json
+├── backend/                      # Python FastAPI application
+│   ├── app/
+│   │   ├── api/                  # Devices, locations & WebSocket endpoints
+│   │   ├── core/                 # Settings and async database engine
+│   │   ├── models/               # SQLAlchemy ORM models (Device, LocationRecord)
+│   │   ├── schemas/              # Pydantic validation schemas
+│   │   ├── services/             # WebSocket ConnectionManager
+│   │   └── main.py
+│   ├── migrations/               # PostgreSQL DDL migrations & triggers
+│   └── requirements.txt
+├── simulator/                    # Synthetic CQB kinematics simulator
+│   ├── config.py                 # Waypoints and tactical units
+│   ├── main.py                   # Async telemetry posting loop
+│   └── requirements.txt
+├── docs/                         # Project documentation
+│   ├── API_CONTRACT.md
+│   ├── ARCHITECTURE.md
+│   ├── DEVELOPMENT_PLAN.md
+│   ├── PROJECT_CONTEXT.md
+│   ├── TEAM_RESPONSIBILITIES.md
+│   └── VIVA_PREPARATION.md       # Comprehensive exam and viva guide
+└── README.md
+```
+
+---
+
+## 👥 Team Responsibilities
+
+* **Member 1 (3D Building & Spatial Engineering):** 3D building geometry, floor slabs, room dividers, camera presets, and 3D coordinate mapping.
+* **Member 2 (Backend, Database & Simulation):** FastAPI REST APIs, WebSocket streaming server, PostgreSQL/SQLite database models, and Python CQB kinematics simulator.
+* **Member 3 (Frontend & System Integration):** Command-and-control dashboard UI, reactive hooks, resilient WebSocket client, and end-to-end integration.
+
+---
+
+## ⚠️ Academic Disclaimer
+
+This project is an academic software engineering prototype developed for research, educational demonstration, and evaluation purposes based on the NSG Problem Statement (2024). It is not an officially commissioned or operational military deployment.
